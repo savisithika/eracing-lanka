@@ -1,0 +1,72 @@
+/* 1. GLOBAL SETTINGS */
+body {
+    background-color: #0d0d0d; /* Very dark grey, almost black */
+    color: #ffffff;            /* White text */
+    font-family: 'Arial', sans-serif; /* Clean, modern font */
+    margin: 0;                 /* Removes default white borders */
+    
+    /* 2. FLEXBOX CENTERING ( The Magic Part ) */
+    /* This forces the content to stay exactly in the middle of the screen */
+    display: flex;             
+    justify-content: center;   /* Center Horizontally (Left/Right) */
+    align-items: center;       /* Center Vertically (Up/Down) */
+    min-height: 100vh;         /* Force the page to be as tall as the screen */
+    text-align: center;        /* Center the text lines */
+}
+
+/* 3. FIXING THE LOGO */
+.logo {
+    width: 300px;              /* Sets a fixed width */
+    height: auto;              /* Keeps the aspect ratio correct */
+    margin-bottom: 20px;       /* Adds space below the logo */
+}
+
+/* 4. TYPOGRAPHY STYLES */
+h1 {
+    font-size: 2.5rem;         /* Large text size */
+    text-transform: uppercase; /* Makes it all caps automatically */
+    margin-bottom: 10px;       
+    /* A subtle Neon Red glow for the racing vibe */
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.5); 
+}
+
+p {
+    font-size: 1.2rem;
+    color: #cccccc;            /* Slightly grey text for hierarchy */
+}
+
+/* 5. INPUT FIELD & BUTTON */
+.newsletter-form {
+    margin-top: 40px; /* Adds breathing room between text and form */
+}
+
+input {
+    padding: 15px;       /* Makes the box comfortable to type in */
+    width: 250px;        /* Width of the text box */
+    border-radius: 5px;  /* Slightly rounded corners */
+    border: none;        /* Removes the ugly default border */
+    outline: none;       /* Removes the blue line when clicking */
+}
+
+button {
+    padding: 15px 30px;  /* Big clickable area */
+    border-radius: 5px;  /* Matches the input corners */
+    border: none;
+    
+    /* THE NEON LOOK */
+    background-color: #39ff14; /* Neon Green (Matches your logo vibe) */
+    color: #000000;            /* Black text for contrast */
+    font-weight: bold;         /* Thick text */
+    text-transform: uppercase;
+    cursor: pointer;           /* Changes mouse cursor to a hand */
+    
+    margin-left: 10px;         /* Space between input and button */
+    transition: all 0.3s ease; /* Smooth animation speed */
+}
+
+/* 6. HOVER EFFECT (The Interactive Part) */
+button:hover {
+    background-color: #ffffff; /* Button turns white */
+    box-shadow: 0 0 20px #39ff14; /* Glows green */
+    transform: scale(1.05);    /* Grows slightly larger */
+}
