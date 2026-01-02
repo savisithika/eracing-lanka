@@ -71,10 +71,26 @@ p {
 /* 5. MOBILE ADJUSTMENTS */
 @media (max-width: 600px) {
     h1 {
-        font-size: 2.5rem; /* Smaller text on phone */
-        -webkit-text-stroke: 1px #39ff14; /* Thinner stroke on phone */
+        /* 1. Make text smaller so it fits nicely */
+        font-size: 1.8rem; 
+        
+        /* 2. Add some space between the two lines of text */
+        line-height: 1.3;  
+        
+        /* 3. Make the neon outline thinner so it doesn't look messy */
+        -webkit-text-stroke: 0.5px #39ff14; 
+        
+        /* 4. Add side padding so text doesn't hit the screen edges */
+        padding: 0 10px;
     }
+
     .logo {
-        width: 100%; /* Full width on phone */
+        width: 95%; /* Keep logo large but with a tiny safety margin */
+        margin-bottom: 20px;
+    }
+
+    p {
+        font-size: 0.9rem; /* Make subtitle smaller and cleaner */
+        padding: 0 10px;   /* Prevent it from touching the edges */
     }
 }
