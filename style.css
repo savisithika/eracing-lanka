@@ -1,72 +1,80 @@
 /* 1. GLOBAL SETTINGS */
 body {
-    background-color: #0d0d0d; /* Very dark grey, almost black */
-    color: #ffffff;            /* White text */
-    font-family: 'Arial', sans-serif; /* Clean, modern font */
-    margin: 0;                 /* Removes default white borders */
+    background-color: #050505; /* Deep black background */
+    color: #ffffff;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
     
-    /* 2. FLEXBOX CENTERING ( The Magic Part ) */
-    /* This forces the content to stay exactly in the middle of the screen */
+    /* Flexbox Center */
     display: flex;             
-    justify-content: center;   /* Center Horizontally (Left/Right) */
-    align-items: center;       /* Center Vertically (Up/Down) */
-    min-height: 100vh;         /* Force the page to be as tall as the screen */
-    text-align: center;        /* Center the text lines */
+    justify-content: center;   
+    align-items: center;       
+    min-height: 100vh;         
+    text-align: center;
+    
+    /* Optional: A subtle grid background for a "Sim" feel */
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
 }
 
-/* 3. FIXING THE LOGO */
+/* 2. THE LOGO */
 .logo {
-    width: 300px;              /* Sets a fixed width */
-    height: auto;              /* Keeps the aspect ratio correct */
-    margin-bottom: 20px;       /* Adds space below the logo */
+    width: 90%;                /* Responsive width */
+    max-width: 600px;          /* Max size on desktop */
+    height: auto;
+    margin-bottom: 10px;       /* Bring headline closer to logo */
+    
+    /* Add a subtle glow to the logo image itself */
+    filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.3));
 }
 
-/* 4. TYPOGRAPHY STYLES */
+/* 3. THE "COMING SOON" HEADLINE (The Racing Style) */
 h1 {
-    font-size: 2.5rem;         /* Large text size */
-    text-transform: uppercase; /* Makes it all caps automatically */
-    margin-bottom: 10px;       
-    /* A subtle Neon Red glow for the racing vibe */
-    text-shadow: 0 0 10px rgba(255, 0, 0, 0.5); 
-}
-
-p {
-    font-size: 1.2rem;
-    color: #cccccc;            /* Slightly grey text for hierarchy */
-}
-
-/* 5. INPUT FIELD & BUTTON */
-.newsletter-form {
-    margin-top: 40px; /* Adds breathing room between text and form */
-}
-
-input {
-    padding: 15px;       /* Makes the box comfortable to type in */
-    width: 250px;        /* Width of the text box */
-    border-radius: 5px;  /* Slightly rounded corners */
-    border: none;        /* Removes the ugly default border */
-    outline: none;       /* Removes the blue line when clicking */
-}
-
-button {
-    padding: 15px 30px;  /* Big clickable area */
-    border-radius: 5px;  /* Matches the input corners */
-    border: none;
-    
-    /* THE NEON LOOK */
-    background-color: #39ff14; /* Neon Green (Matches your logo vibe) */
-    color: #000000;            /* Black text for contrast */
-    font-weight: bold;         /* Thick text */
+    font-family: 'Russo One', sans-serif; /* The Racing Font */
+    font-size: 3.5rem;         /* Big and loud */
+    margin: 0;
+    margin-bottom: 15px;
     text-transform: uppercase;
-    cursor: pointer;           /* Changes mouse cursor to a hand */
+    line-height: 1;
+
+    /* MAKE IT LOOK FAST (Slant it) */
+    transform: skewX(-10deg);
+
+    /* THE METALLIC TEXT EFFECT */
+    background: linear-gradient(to bottom, #ffffff 0%, #aebcbf 50%, #6e7774 51%, #0a0e0a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent; /* Hides the flat color so gradient shows */
     
-    margin-left: 10px;         /* Space between input and button */
-    transition: all 0.3s ease; /* Smooth animation speed */
+    /* THE NEON OUTLINE (Green & Cyan Stroke) */
+    /* This creates a stroke around the text */
+    -webkit-text-stroke: 2px #39ff14; 
+    
+    /* THE GLOW */
+    filter: drop-shadow(0 0 5px #39ff14);
 }
 
-/* 6. HOVER EFFECT (The Interactive Part) */
-button:hover {
-    background-color: #ffffff; /* Button turns white */
-    box-shadow: 0 0 20px #39ff14; /* Glows green */
-    transform: scale(1.05);    /* Grows slightly larger */
+/* 4. THE SUBTITLE */
+p {
+    font-family: 'Russo One', sans-serif; /* Keep the font consistent */
+    font-size: 1.2rem;
+    color: #00ffff;            /* Cyan color to match the logo accents */
+    letter-spacing: 2px;       /* Spread the letters out */
+    text-transform: uppercase;
+    transform: skewX(-10deg);  /* Slant it too */
+    margin-top: 10px;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8); /* Cyan Glow */
+}
+
+/* 5. MOBILE ADJUSTMENTS */
+@media (max-width: 600px) {
+    h1 {
+        font-size: 2.5rem; /* Smaller text on phone */
+        -webkit-text-stroke: 1px #39ff14; /* Thinner stroke on phone */
+    }
+    .logo {
+        width: 100%; /* Full width on phone */
+    }
 }
