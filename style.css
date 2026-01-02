@@ -5,14 +5,14 @@ body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     
-    /* Flexbox Center */
+    /* Flexbox Center - Keeps everything in the middle of the screen */
     display: flex;             
     justify-content: center;   
     align-items: center;       
     min-height: 100vh;         
     text-align: center;
     
-    /* Optional: A subtle grid background for a "Sim" feel */
+    /* BACKGROUND GRID PATTERN (Sim Racing Vibe) */
     background-image: 
         linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
@@ -24,73 +24,91 @@ body {
     width: 90%;                /* Responsive width */
     max-width: 600px;          /* Max size on desktop */
     height: auto;
-    margin-bottom: 10px;       /* Bring headline closer to logo */
+    margin-bottom: 20px;       /* Space between logo and text */
     
-    /* Add a subtle glow to the logo image itself */
+    /* Cyan Glow behind the logo */
     filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.3));
 }
 
-/* 3. THE "COMING SOON" HEADLINE (The Racing Style) */
+/* 3. THE HEADLINE CONTAINER */
 h1 {
     font-family: 'Russo One', sans-serif; /* The Racing Font */
-    font-size: 3.5rem;         /* Big and loud */
+    font-size: 3.5rem;         
     margin: 0;
     margin-bottom: 15px;
     text-transform: uppercase;
-    line-height: 1;
+    line-height: 1.1;
 
-    /* MAKE IT LOOK FAST (Slant it) */
+    /* DESKTOP DEFAULT: Standard block (keeps text on one line) */
+    display: block;
+    text-align: center;
+}
+
+/* 4. THE METALLIC TEXT SPANS (The Headline Parts) */
+h1 span {
+    /* DESKTOP DEFAULT: Sit side-by-side */
+    display: inline-block;
+    
+    /* MAKE IT LOOK FAST (Slanted) */
     transform: skewX(-10deg);
 
-    /* THE METALLIC TEXT EFFECT */
+    /* THE METALLIC GRADIENT PAINT JOB */
     background: linear-gradient(to bottom, #ffffff 0%, #aebcbf 50%, #6e7774 51%, #0a0e0a 100%);
     -webkit-background-clip: text;
     background-clip: text;
-    color: transparent; /* Hides the flat color so gradient shows */
+    color: transparent; /* Hides flat color so gradient shows */
     
-    /* THE NEON OUTLINE (Green & Cyan Stroke) */
-    /* This creates a stroke around the text */
+    /* THE NEON GREEN OUTLINE */
     -webkit-text-stroke: 2px #39ff14; 
     
     /* THE GLOW */
     filter: drop-shadow(0 0 5px #39ff14);
 }
 
-/* 4. THE SUBTITLE */
+/* 5. THE SUBTITLE (Sri Lanka's Premier...) */
 p {
-    font-family: 'Russo One', sans-serif; /* Keep the font consistent */
+    /* ENSURE THE FONT IS APPLIED */
+    font-family: 'Russo One', sans-serif; 
+    
     font-size: 1.2rem;
-    color: #00ffff;            /* Cyan color to match the logo accents */
-    letter-spacing: 2px;       /* Spread the letters out */
+    color: #00ffff;            /* Cyan color to match logo */
+    letter-spacing: 1.5px;     /* Spread letters out slightly */
     text-transform: uppercase;
-    transform: skewX(-10deg);  /* Slant it too */
+    
+    /* FAST EFFECT */
+    transform: skewX(-10deg);  
+    
     margin-top: 10px;
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8); /* Cyan Glow */
+    
+    /* CYAN GLOW */
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8); 
 }
 
-/* 5. MOBILE ADJUSTMENTS */
+/* 6. MOBILE ADJUSTMENTS */
 @media (max-width: 600px) {
+    /* Switch Headline to Vertical Stack */
     h1 {
-        /* 1. Make text smaller so it fits nicely */
-        font-size: 1.8rem; 
-        
-        /* 2. Add some space between the two lines of text */
-        line-height: 1.3;  
-        
-        /* 3. Make the neon outline thinner so it doesn't look messy */
-        -webkit-text-stroke: 0.5px #39ff14; 
-        
-        /* 4. Add side padding so text doesn't hit the screen edges */
-        padding: 0 10px;
+        font-size: 2.2rem; /* Smaller text on phones */
+        display: flex;
+        flex-direction: column; /* Stacks items vertically */
+        align-items: center;
+    }
+    
+    h1 span {
+        display: block; /* Forces separate lines */
+        -webkit-text-stroke: 1px #39ff14; /* Thinner outline on mobile */
+        margin-bottom: 5px;
+        margin-left: 0; /* Resets any space */
+    }
+
+    /* Subtitle Adjustments for Mobile */
+    p {
+        font-size: 0.9rem;
+        padding: 0 15px; /* Adds padding so it doesn't hit the screen edge */
+        line-height: 1.4;
     }
 
     .logo {
-        width: 95%; /* Keep logo large but with a tiny safety margin */
-        margin-bottom: 20px;
-    }
-
-    p {
-        font-size: 0.9rem; /* Make subtitle smaller and cleaner */
-        padding: 0 10px;   /* Prevent it from touching the edges */
+        width: 100%; /* Use full width on mobile */
     }
 }
