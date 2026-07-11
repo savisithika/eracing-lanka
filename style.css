@@ -1,4 +1,6 @@
-/* 1. GLOBAL SETTINGS */
+/* ==========================================================================
+   1. GLOBAL SETTINGS 
+   ========================================================================== */
 body {
     background-color: #050505; /* Deep black background */
     color: #ffffff;
@@ -19,7 +21,13 @@ body {
     background-size: 50px 50px;
 }
 
-/* 2. THE LOGO */
+.container {
+    padding: 20px;
+}
+
+/* ==========================================================================
+   2. THE LOGO 
+   ========================================================================== */
 .logo {
     width: 90%;                /* Responsive width */
     max-width: 600px;          /* Max size on desktop */
@@ -30,7 +38,9 @@ body {
     filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.3));
 }
 
-/* 3. THE HEADLINE CONTAINER */
+/* ==========================================================================
+   3. THE HEADLINE CONTAINER 
+   ========================================================================== */
 h1 {
     font-family: 'Russo One', sans-serif; /* The Racing Font */
     font-size: 3.5rem;         
@@ -44,7 +54,9 @@ h1 {
     text-align: center;
 }
 
-/* 4. THE METALLIC TEXT SPANS (The Headline Parts) */
+/* ==========================================================================
+   4. THE METALLIC TEXT SPANS (The Headline Parts) 
+   ========================================================================== */
 h1 span {
     /* DESKTOP DEFAULT: Sit side-by-side */
     display: inline-block;
@@ -65,7 +77,14 @@ h1 span {
     filter: drop-shadow(0 0 5px #39ff14);
 }
 
-/* 5. THE SUBTITLE (Sri Lanka's Premier...) */
+/* DESKTOP SPACE BETWEEN SPANS */
+h1 .location-span {
+    margin-left: 15px; 
+}
+
+/* ==========================================================================
+   5. THE SUBTITLE (Sri Lanka's Premier...) 
+   ========================================================================== */
 p {
     /* ENSURE THE FONT IS APPLIED */
     font-family: 'Russo One', sans-serif; 
@@ -84,7 +103,9 @@ p {
     text-shadow: 0 0 10px rgba(0, 255, 255, 0.8); 
 }
 
-/* 6. MOBILE ADJUSTMENTS */
+/* ==========================================================================
+   6. MOBILE ADJUSTMENTS 
+   ========================================================================== */
 @media (max-width: 600px) {
     /* Switch Headline to Vertical Stack */
     h1 {
@@ -98,7 +119,11 @@ p {
         display: block; /* Forces separate lines */
         -webkit-text-stroke: 1px #39ff14; /* Thinner outline on mobile */
         margin-bottom: 5px;
-        margin-left: 0; /* Resets any space */
+    }
+
+    /* FORCE RESET MARGIN ON MOBILE (Centers the stacked location text) */
+    h1 .location-span {
+        margin-left: 0 !important; 
     }
 
     /* Subtitle Adjustments for Mobile */
