@@ -164,7 +164,43 @@ p {
     box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
 }
 
-/* 11. MOBILE ADJUSTMENTS */
+/* 11. TOP NAVIGATION HEADER */
+.top-nav {
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(5, 5, 5, 0.95); 
+    border-bottom: 2px solid #00ffff; 
+    z-index: 1000; 
+    padding: 15px 0;
+    box-shadow: 0 4px 15px rgba(0, 255, 255, 0.15); 
+}
+
+.top-nav nav {
+    display: flex;
+    justify-content: center;
+    gap: 40px; 
+}
+
+.nav-btn {
+    font-family: 'Russo One', sans-serif;
+    color: #ffffff;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    padding: 5px 10px;
+    transition: all 0.3s ease; 
+}
+
+.nav-btn:hover {
+    color: #39ff14; 
+    text-shadow: 0 0 10px rgba(57, 255, 20, 0.6);
+    transform: scale(1.05); 
+}
+
+/* 12. MOBILE ADJUSTMENTS */
 @media (max-width: 600px) {
     h1 {
         font-size: 2.2rem; 
@@ -194,5 +230,13 @@ p {
         flex-direction: column;
         text-align: center;
         gap: 10px;
+    }
+
+    .top-nav nav {
+        gap: 15px; 
+    }
+    
+    .nav-btn {
+        font-size: 0.9rem; 
     }
 }
