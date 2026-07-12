@@ -1,139 +1,198 @@
-/* ==========================================================================
-   1. GLOBAL SETTINGS 
-   ========================================================================== */
+/* 1. GLOBAL SETTINGS */
 body {
-    background-color: #050505; /* Deep black background */
+    background-color: #050505; 
     color: #ffffff;
     font-family: 'Arial', sans-serif;
     margin: 0;
-    
-    /* Flexbox Center - Keeps everything in the middle of the screen */
-    display: flex;             
-    justify-content: center;   
-    align-items: center;       
-    min-height: 100vh;         
     text-align: center;
     
-    /* BACKGROUND GRID PATTERN (Sim Racing Vibe) */
+    /* BACKGROUND GRID PATTERN */
     background-image: 
         linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
     background-size: 50px 50px;
 }
 
-.container {
-    padding: 20px;
+/* 2. LAYOUT SECTIONS */
+section {
+    padding: 80px 20px;
 }
 
-/* ==========================================================================
-   2. THE LOGO 
-   ========================================================================== */
+h2 {
+    font-family: 'Russo One', sans-serif;
+    font-size: 2.5rem;
+    color: #ffffff;
+    margin-bottom: 40px;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+/* HERO SECTION (Keeps the original full-screen center effect) */
+.hero {
+    display: flex;             
+    flex-direction: column;
+    justify-content: center;   
+    align-items: center;       
+    min-height: 100vh;         
+}
+
+/* 3. THE LOGO */
 .logo {
-    width: 90%;                /* Responsive width */
-    max-width: 600px;          /* Max size on desktop */
+    width: 90%;                
+    max-width: 600px;          
     height: auto;
-    margin-bottom: 20px;       /* Space between logo and text */
-    
-    /* Cyan Glow behind the logo */
+    margin-bottom: 20px;       
     filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.3));
 }
 
-/* ==========================================================================
-   3. THE HEADLINE CONTAINER 
-   ========================================================================== */
+/* 4. THE HEADLINE CONTAINER */
 h1 {
-    font-family: 'Russo One', sans-serif; /* The Racing Font */
+    font-family: 'Russo One', sans-serif; 
     font-size: 3.5rem;         
     margin: 0;
     margin-bottom: 15px;
     text-transform: uppercase;
     line-height: 1.1;
-
-    /* DESKTOP DEFAULT: Standard block (keeps text on one line) */
     display: block;
-    text-align: center;
 }
 
-/* ==========================================================================
-   4. THE METALLIC TEXT SPANS (The Headline Parts) 
-   ========================================================================== */
+/* 5. THE METALLIC TEXT SPANS */
 h1 span {
-    /* DESKTOP DEFAULT: Sit side-by-side */
     display: inline-block;
-    
-    /* MAKE IT LOOK FAST (Slanted) */
     transform: skewX(-10deg);
-
-    /* THE METALLIC GRADIENT PAINT JOB */
     background: linear-gradient(to bottom, #ffffff 0%, #aebcbf 50%, #6e7774 51%, #0a0e0a 100%);
     -webkit-background-clip: text;
     background-clip: text;
-    color: transparent; /* Hides flat color so gradient shows */
-    
-    /* THE NEON GREEN OUTLINE */
+    color: transparent; 
     -webkit-text-stroke: 2px #39ff14; 
-    
-    /* THE GLOW */
     filter: drop-shadow(0 0 5px #39ff14);
 }
 
-/* DESKTOP SPACE BETWEEN SPANS */
-h1 .location-span {
-    margin-left: 15px; 
-}
-
-/* ==========================================================================
-   5. THE SUBTITLE (Sri Lanka's Premier...) 
-   ========================================================================== */
+/* 6. THE SUBTITLE */
 p {
-    /* ENSURE THE FONT IS APPLIED */
     font-family: 'Russo One', sans-serif; 
-    
     font-size: 1.2rem;
-    color: #00ffff;            /* Cyan color to match logo */
-    letter-spacing: 1.5px;     /* Spread letters out slightly */
+    color: #00ffff;            
+    letter-spacing: 1.5px;     
     text-transform: uppercase;
-    
-    /* FAST EFFECT */
     transform: skewX(-10deg);  
-    
     margin-top: 10px;
-    
-    /* CYAN GLOW */
     text-shadow: 0 0 10px rgba(0, 255, 255, 0.8); 
 }
 
-/* ==========================================================================
-   6. MOBILE ADJUSTMENTS 
-   ========================================================================== */
+/* 7. GALLERY GRID */
+.gallery-grid {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.gallery-grid img {
+    width: 100%;
+    max-width: 350px;
+    border-radius: 10px;
+    border: 2px solid #39ff14;
+    box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
+    object-fit: cover;
+}
+
+/* 8. PRICING BOX */
+.pricing-box {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid #00ffff;
+    border-radius: 15px;
+    padding: 40px;
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+}
+
+.pricing-box p {
+    font-family: 'Arial', sans-serif;
+    color: #fff;
+    font-size: 1.2rem;
+    text-transform: none;
+    transform: none;
+    text-shadow: none;
+    margin: 15px 0;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 10px;
+}
+
+/* 9. BOOKING BUTTON */
+.btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 15px 40px;
+    font-family: 'Russo One', sans-serif;
+    font-size: 1.5rem;
+    color: #050505;
+    background-color: #39ff14;
+    text-decoration: none;
+    border-radius: 5px;
+    text-transform: uppercase;
+    box-shadow: 0 0 15px #39ff14;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px #39ff14;
+}
+
+.booking p {
+    font-family: 'Arial', sans-serif;
+    text-transform: none;
+    transform: none;
+    color: #ddd;
+    text-shadow: none;
+    margin-bottom: 30px;
+}
+
+/* 10. MAP CONTAINER */
+.map-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    border: 2px solid #00ffff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+}
+
+/* 11. MOBILE ADJUSTMENTS */
 @media (max-width: 600px) {
-    /* Switch Headline to Vertical Stack */
     h1 {
-        font-size: 2.2rem; /* Smaller text on phones */
+        font-size: 2.2rem; 
         display: flex;
-        flex-direction: column; /* Stacks items vertically */
+        flex-direction: column; 
         align-items: center;
     }
     
     h1 span {
-        display: block; /* Forces separate lines */
-        -webkit-text-stroke: 1px #39ff14; /* Thinner outline on mobile */
+        display: block; 
+        -webkit-text-stroke: 1px #39ff14; 
         margin-bottom: 5px;
+        margin-left: 0; 
     }
 
-    /* FORCE RESET MARGIN ON MOBILE (Centers the stacked location text) */
-    h1 .location-span {
-        margin-left: 0 !important; 
-    }
-
-    /* Subtitle Adjustments for Mobile */
     p {
         font-size: 0.9rem;
-        padding: 0 15px; /* Adds padding so it doesn't hit the screen edge */
+        padding: 0 15px; 
         line-height: 1.4;
     }
 
     .logo {
-        width: 100%; /* Use full width on mobile */
+        width: 100%; 
+    }
+
+    .pricing-box p {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
     }
 }
