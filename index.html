@@ -26,6 +26,21 @@
             <p class="subtitle">Sri Lanka's Premier Sim Racing Experience. Partnered with the Ceylon Motor Sports Club and Mora Racing.</p>
         </section>
 
+        <!-- GALLERY SLIDESHOW -->
+        <section class="gallery">
+            <div class="slideshow" id="slideshow">
+                <div class="slide active"><img src="images/gallery/1.jpg" alt="ERACING LANKA rig 1"></div>
+                <div class="slide"><img src="images/gallery/2.jpg" alt="ERACING LANKA rig 2"></div>
+                <div class="slide"><img src="images/gallery/3.jpg" alt="ERACING LANKA rig 3"></div>
+                <div class="slide"><img src="images/gallery/4.jpg" alt="ERACING LANKA rig 4"></div>
+
+                <button class="slide-arrow prev" id="prevSlide" aria-label="Previous photo">&#10094;</button>
+                <button class="slide-arrow next" id="nextSlide" aria-label="Next photo">&#10095;</button>
+
+                <div class="slide-dots" id="slideDots"></div>
+            </div>
+        </section>
+
         <div class="checker-divider" aria-hidden="true"></div>
 
         <!-- PRICING -->
@@ -38,16 +53,16 @@
                     <span class="price"><small>Rs.</small>1,200</span>
                 </div>
                 <div class="price-card">
-                    <span class="duration">60<small>MIN</small></span>
+                    <span class="duration">1<small>HR</small></span>
                     <span class="price"><small>Rs.</small>2,000</span>
                 </div>
                 <div class="price-card">
-                    <span class="duration">120<small>MIN</small></span>
+                    <span class="duration">2<small>HR</small></span>
                     <span class="price"><small>Rs.</small>3,500</span>
                 </div>
                 <div class="price-card price-card--best">
                     <span class="best-tag">Best Value</span>
-                    <span class="duration">240<small>MIN</small></span>
+                    <span class="duration">4<small>HR</small></span>
                     <span class="price"><small>Rs.</small>6,000</span>
                 </div>
             </div>
@@ -87,6 +102,47 @@
         </section>
 
     </main>
+
+    <script>
+        (function () {
+            var slides = document.querySelectorAll('#slideshow .slide');
+            var dotsWrap = document.getElementById('slideDots');
+            var current = 0;
+            var timer;
+
+            slides.forEach(function (_, i) {
+                var dot = document.createElement('button');
+                dot.className = 'slide-dot' + (i === 0 ? ' active' : '');
+                dot.setAttribute('aria-label', 'Go to photo ' + (i + 1));
+                dot.addEventListener('click', function () { goTo(i); });
+                dotsWrap.appendChild(dot);
+            });
+
+            var dots = dotsWrap.querySelectorAll('.slide-dot');
+
+            function goTo(index) {
+                slides[current].classList.remove('active');
+                dots[current].classList.remove('active');
+                current = (index + slides.length) % slides.length;
+                slides[current].classList.add('active');
+                dots[current].classList.add('active');
+                resetTimer();
+            }
+
+            function next() { goTo(current + 1); }
+            function prev() { goTo(current - 1); }
+
+            function resetTimer() {
+                clearInterval(timer);
+                timer = setInterval(next, 4500);
+            }
+
+            document.getElementById('nextSlide').addEventListener('click', next);
+            document.getElementById('prevSlide').addEventListener('click', prev);
+
+            resetTimer();
+        })();
+    </script>
 
 </body>
 </html>
