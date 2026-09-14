@@ -89,7 +89,104 @@ h1 span {
     text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
 }
 
-/* 4. CHECKERED DIVIDER (signature element) */
+/* 4. GALLERY SLIDESHOW */
+.gallery {
+    width: 100%;
+    margin: 20px 0 0;
+    display: flex;
+    justify-content: center;
+}
+
+.slideshow {
+    position: relative;
+    width: 100%;
+    max-width: 700px;
+    aspect-ratio: 16 / 9;
+    border: 1px solid rgba(57, 255, 20, 0.35);
+    border-radius: 6px;
+    overflow: hidden;
+    background: #0c1210;
+    box-shadow: inset 0 0 20px rgba(57, 255, 20, 0.05);
+}
+
+.slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+
+.slide.active {
+    opacity: 1;
+}
+
+.slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.slide-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(5, 5, 5, 0.55);
+    border: 1px solid rgba(57, 255, 20, 0.5);
+    color: #39ff14;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    line-height: 1;
+    z-index: 2;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.slide-arrow:hover {
+    background: rgba(57, 255, 20, 0.15);
+    color: #ffffff;
+}
+
+.slide-arrow.prev {
+    left: 12px;
+}
+
+.slide-arrow.next {
+    right: 12px;
+}
+
+.slide-dots {
+    position: absolute;
+    bottom: 12px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    z-index: 2;
+}
+
+.slide-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    border: 1px solid #39ff14;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+}
+
+.slide-dot.active {
+    background: #39ff14;
+    box-shadow: 0 0 6px rgba(57, 255, 20, 0.7);
+}
+
+/* 5. CHECKERED DIVIDER (signature element) */
 .checker-divider {
     width: 100%;
     max-width: 500px;
@@ -104,7 +201,7 @@ h1 span {
     transform: skewX(-10deg);
 }
 
-/* 5. SECTION LABEL */
+/* 6. SECTION LABEL */
 .section-label {
     font-family: 'Share Tech Mono', monospace;
     color: #39ff14;
@@ -114,7 +211,7 @@ h1 span {
     margin: 0 0 24px;
 }
 
-/* 6. PRICING */
+/* 7. PRICING */
 .pricing {
     width: 100%;
 }
@@ -186,7 +283,7 @@ h1 span {
     text-shadow: none;
 }
 
-/* 7. CTA / BOOKING */
+/* 8. CTA / BOOKING */
 .cta {
     width: 100%;
     display: flex;
@@ -236,7 +333,7 @@ h1 span {
     line-height: 1.5;
 }
 
-/* 8. LOCATION */
+/* 9. LOCATION */
 .location {
     width: 100%;
     display: flex;
@@ -278,7 +375,7 @@ h1 span {
     border-color: #ffffff;
 }
 
-/* 9. MOBILE ADJUSTMENTS */
+/* 10. MOBILE ADJUSTMENTS */
 @media (max-width: 600px) {
     .page {
         padding: 40px 16px 60px;
@@ -324,5 +421,11 @@ h1 span {
 
     .map-frame iframe {
         height: 220px;
+    }
+
+    .slide-arrow {
+        width: 30px;
+        height: 30px;
+        font-size: 0.75rem;
     }
 }
