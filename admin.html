@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERACING LANKA — Race Control Admin</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .admin-page { max-width: 1050px; margin: 0 auto; padding: 40px 20px 80px; }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 24px; border-bottom: 1px solid rgba(57,255,20,0.3); padding-bottom: 16px; flex-wrap: wrap; gap: 12px; }
+        .admin-title { font-family: 'Russo One', sans-serif; color: #39ff14; font-size: 1.6rem; margin: 0; text-transform: uppercase; }
+        .logout-btn { background: transparent; border: 1px solid #ff4d4d; color: #ff4d4d; font-family: 'Share Tech Mono', monospace; padding: 8px 16px; border-radius: 5px; cursor: pointer; text-transform: uppercase; }
+        .logout-btn:hover { background: rgba(255,77,77,0.15); }
+        .login-box { max-width: 420px; margin: 60px auto; background: #0c1210; border: 1px solid rgba(57,255,20,0.4); border-radius: 8px; padding: 32px 24px; text-align: left; }
+        .admin-card { background: #0c1210; border: 1px solid rgba(57,255,20,0.35); border-radius: 8px; padding: 24px; margin-bottom: 24px; width: 100%; text-align: left; overflow-x: auto; }
+        .toolbar { display: flex; gap: 12px; align-items: center; margin-bottom: 18px; flex-wrap: wrap; }
+        .admin-table { width: 100%; border-collapse: collapse; font-family: 'Share Tech Mono', monospace; font-size: 0.9rem; }
+        .admin-table th, .admin-table td { padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.08); text-align: left; }
+        .admin-table th { color: #00ffff; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; text-transform: uppercase; }
+        .badge.confirmed, .badge.approved { background: rgba(57,255,20,0.15); color: #39ff14; border: 1px solid #39ff14; }
+        .badge.pending { background: rgba(255,215,0,0.15); color: #ffd700; border: 1px solid #ffd700; }
+        .badge.cancelled { background: rgba(255,77,77,0.15); color: #ff4d4d; border: 1px solid #ff4d4d; }
+        .action-btn { background: #050505; border: 1px solid rgba(57,255,20,0.4); color: #fff; font-family: 'Share Tech Mono', monospace; font-size: 0.78rem; padding: 6px 10px; border-radius: 4px; cursor: pointer; margin-right: 6px; }
+        .action-btn:hover { border-color: #00ffff; color: #00ffff; }
+        .action-btn.danger { border-color: #ff4d4d; color: #ff4d4d; }
+        .sched-row { display: grid; grid-template-columns: 120px 1fr 1fr 100px; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06); font-family: 'Share Tech Mono', monospace; }
+        .slip-link { color: #00ffff; text-decoration: underline; }
+        @media (max-width: 650px) { .sched-row { grid-template-columns: 1fr 1fr; } }
+    </style>
+</head>
+<body>
+
+    <main class="admin-page">
+        <!-- LOGIN SCREEN -->
+        <div id="loginScreen" class="login-box">
+            <p class="section-label" style="margin-bottom: 16px;">ERACING LANKA — Race Control</p>
+            <form id="loginForm" class="eracing-form">
+                <div class="form-group">
+                    <label for="adminEmail">Admin Email</label>
+                    <input type="email" id="adminEmail" required placeholder="admin@eracing.lk">
+                </div>
+                <div class="form-group">
+                    <label for="adminPass">Password</label>
+                    <input type="password" id="adminPass" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="submit-btn">Sign In to Race Control</button>
+                <div id="loginMsg" class="status-msg"></div>
+            </form>
+        </div>
+
+        <!-- PROTECTED ADMIN DASHBOARD -->
+        <div id="dashboardScreen" style="display: none; width: 100%;">
+            <div class="admin-header">
+                <h2 class="admin-title">ERACING LANKA // Race Control</h2>
+                <div>
+                    <a href="index.html" class="action-btn" style="text-decoration:none; padding:8px 14px;">← View Live Site</a>
+                    <button id="logoutBtn" class="logout-btn">Sign Out</button>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <div class="mode-tabs" style="justify-content: flex-start;">
+                <button type="button" class="mode-tab active" data-tab="tabBookings">Rig Bookings</button>
+                <button type="button" class="mode-tab" data-tab="tabEvents">Event Signups</button>
+                <button type="button" class="mode-tab" data-tab="tabSettings">Hours & Settings</button>
+            </div>
+
+            <!-- TAB 1: RIG BOOKINGS -->
+            <div id="tabBookings" class="admin-card tab-view">
+                <div class="toolbar">
+                    <label style="font-family:'Share Tech Mono',monospace; color:#39ff14;">Filter Date:</label>
+                    <input type="date" id="filterDate" style="background:#050505; color:#fff; border:1px solid #39ff14; padding:8px; border-radius:4px; font-family:'Share Tech Mono',monospace;">
+                    <button type="button" id="showAllDatesBtn" class="action-btn">Show All Upcoming</button>
+                    <button type="button" id="refreshBookingsBtn" class="action-btn">↻ Refresh</button>
+                </div>
+
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Date & Time</th>
+                            <th>Sim</th>
+                            <th>Duration / Price</th>
+                            <th>Customer</th>
+                            <th>Payment / Slip</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookingsTableBody"></tbody>
+                </table>
+            </div>
+
+            <!-- TAB 2: EVENT REGISTRATIONS -->
+            <div id="tabEvents" class="admin-card tab-view" style="display: none;">
+                <div class="toolbar">
+                    <button type="button" id="refreshEventsBtn" class="action-btn">↻ Refresh Event List</button>
+                </div>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Event</th>
+                            <th>Driver</th>
+                            <th>WhatsApp & Email</th>
+                            <th>Sim / Discord ID</th>
+                            <th>Receipt</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="eventsTableBody"></tbody>
+                </table>
+            </div>
+
+            <!-- TAB 3: EDITABLE HOURS & VENUE SETTINGS -->
+            <div id="tabSettings" class="admin-card tab-view" style="display: none;">
+                <form id="settingsForm" class="eracing-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="totalRigsInput">Total Active Simulators</label>
+                            <input type="number" id="totalRigsInput" min="1" max="30" value="10" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventsListInput">Active Events (Comma-Separated)</label>
+                            <input type="text" id="eventsListInput" placeholder="Time Attack Challenge, CMSC Qualifiers">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Weekly Operating Hours (24-Hour Format, e.g. 15:00 to 23:00 or 24:00 for Midnight)</label>
+                        <div id="scheduleEditor"></div>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Save Venue Hours & Settings</button>
+                    <div id="settingsMsg" class="status-msg"></div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        (function () {
+            const SUPABASE_URL = 'https://iswamefyodxucoyrwemz.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlzd2FtZWZ5b2R4dWNveXJ3ZW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5ODk4OTEsImV4cCI6MjEwNzU2NTg5MX0.KxzIyB7CurVDF_50LogzQds4sePcast_vB5AjGpyDF4';
+            const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+            const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const loginScreen = document.getElementById('loginScreen');
+            const dashboardScreen = document.getElementById('dashboardScreen');
+            const filterDate = document.getElementById('filterDate');
+
+            // Set today's date in filter
+            const todayStr = new Date().toISOString().split('T')[0];
+            filterDate.value = todayStr;
+
+            // Check auth session
+            async function checkAuth() {
+                const { data: { session } } = await sb.auth.getSession();
+                if (session) {
+                    loginScreen.style.display = 'none';
+                    dashboardScreen.style.display = 'block';
+                    loadBookings(filterDate.value);
+                    loadEvents();
+                    loadVenueSettings();
+                } else {
+                    loginScreen.style.display = 'block';
+                    dashboardScreen.style.display = 'none';
+                }
+            }
+
+            // Login submit
+            document.getElementById('loginForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const msg = document.getElementById('loginMsg');
+                msg.textContent = 'Authenticating...';
+                const { error } = await sb.auth.signInWithPassword({
+                    email: document.getElementById('adminEmail').value.trim(),
+                    password: document.getElementById('adminPass').value
+                });
+                if (error) {
+                    msg.className = 'status-msg error';
+                    msg.textContent = error.message;
+                } else {
+                    msg.textContent = '';
+                    checkAuth();
+                }
+            });
+
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', async () => {
+                await sb.auth.signOut();
+                checkAuth();
+            });
+
+            // Switch Admin Tabs
+            document.querySelectorAll('.mode-tab').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.mode-tab').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.tab-view').forEach(v => v.style.display = 'none');
+                    btn.classList.add('active');
+                    document.getElementById(btn.getAttribute('data-tab')).style.display = 'block';
+                });
+            });
+
+            // Load Simulator Bookings
+            async function loadBookings(dateFilter = null) {
+                const tbody = document.getElementById('bookingsTableBody');
+                tbody.innerHTML = '<tr><td colspan="7">Loading bookings...</td></tr>';
+
+                let query = sb.from('rig_bookings').select('*').order('booking_date', { ascending: true }).order('time_slot', { ascending: true });
+                if (dateFilter) {
+                    query = query.eq('booking_date', dateFilter);
+                } else {
+                    query = query.gte('booking_date', todayStr);
+                }
+
+                const { data, error } = await query;
+                if (error || !data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="color:#9aa39f;">No bookings found for this selection.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = data.map(b => `
+                    <tr>
+                        <td><strong>${b.booking_date}</strong><br><span style="color:#39ff14;">${b.time_slot}</span></td>
+                        <td><strong>SIM ${b.rig_number}</strong></td>
+                        <td>${b.duration_mins || 60} MIN<br><small style="color:#9aa39f;">LKR ${b.price_lkr || 2000}</small></td>
+                        <td>${b.customer_name}<br><a href="tel:${b.customer_phone}" style="color:#00ffff;">${b.customer_phone}</a></td>
+                        <td>${b.payment_method}<br>${b.payment_slip_url ? `<a href="${b.payment_slip_url}" target="_blank" class="slip-link">View Slip ↗</a>` : '<small style="color:#9aa39f;">No slip</small>'}</td>
+                        <td><span class="badge ${b.status}">${b.status}</span></td>
+                        <td>
+                            ${b.status !== 'cancelled' ? `<button class="action-btn danger" onclick="updateBookingStatus('${b.id}', 'cancelled')">Cancel Slot</button>` : `<button class="action-btn" onclick="updateBookingStatus('${b.id}', 'confirmed')">Restore</button>`}
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            window.updateBookingStatus = async function (id, newStatus) {
+                await sb.from('rig_bookings').update({ status: newStatus }).eq('id', id);
+                loadBookings(filterDate.value);
+            };
+
+            filterDate.addEventListener('change', () => loadBookings(filterDate.value));
+            document.getElementById('showAllDatesBtn').addEventListener('click', () => {
+                filterDate.value = '';
+                loadBookings(null);
+            });
+            document.getElementById('refreshBookingsBtn').addEventListener('click', () => loadBookings(filterDate.value || null));
+
+            // Load Event Registrations
+            async function loadEvents() {
+                const tbody = document.getElementById('eventsTableBody');
+                tbody.innerHTML = '<tr><td colspan="7">Loading registrations...</td></tr>';
+
+                const { data } = await sb.from('event_registrations').select('*').order('created_at', { ascending: false });
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="color:#9aa39f;">No event registrations yet.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = data.map(ev => `
+                    <tr>
+                        <td><strong>${ev.event_name}</strong></td>
+                        <td>${ev.driver_name}</td>
+                        <td><a href="tel:${ev.driver_phone}" style="color:#00ffff;">${ev.driver_phone}</a><br><small>${ev.driver_email}</small></td>
+                        <td>${ev.sim_id || '—'}</td>
+                        <td>${ev.payment_slip_url ? `<a href="${ev.payment_slip_url}" target="_blank" class="slip-link">View Receipt ↗</a>` : '—'}</td>
+                        <td><span class="badge ${ev.status}">${ev.status}</span></td>
+                        <td>
+                            <button class="action-btn" onclick="updateEventStatus('${ev.id}', 'approved')">Approve</button>
+                            <button class="action-btn danger" onclick="updateEventStatus('${ev.id}', 'cancelled')">Reject</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            window.updateEventStatus = async function (id, newStatus) {
+                await sb.from('event_registrations').update({ status: newStatus }).eq('id', id);
+                loadEvents();
+            };
+
+            document.getElementById('refreshEventsBtn').addEventListener('click', loadEvents);
+
+            // Load & Edit Venue Hours + Settings
+            async function loadVenueSettings() {
+                const { data } = await sb.from('venue_settings').select('*').eq('id', 1).maybeSingle();
+                if (!data) return;
+
+                document.getElementById('totalRigsInput').value = data.total_rigs || 10;
+                document.getElementById('eventsListInput').value = (data.active_events || []).join(', ');
+
+                const editor = document.getElementById('scheduleEditor');
+                editor.innerHTML = '';
+
+                for (let d = 0; d <= 6; d++) {
+                    const rule = (data.schedule && data.schedule[String(d)]) || { open: "15:00", close: "23:00", closed: false };
+                    const row = document.createElement('div');
+                    row.className = 'sched-row';
+                    row.innerHTML = `
+                        <strong style="color:#fff;">${dayNames[d]}</strong>
+                        <div><small style="color:#9aa39f;">Open (HH:MM)</small><input type="text" id="open_${d}" value="${rule.open}"></div>
+                        <div><small style="color:#9aa39f;">Close (HH:MM)</small><input type="text" id="close_${d}" value="${rule.close}"></div>
+                        <label style="display:flex; align-items:center; gap:6px; color:#ffd700; cursor:pointer;">
+                            <input type="checkbox" id="closed_${d}" ${rule.closed ? 'checked' : ''}> Closed
+                        </label>
+                    `;
+                    editor.appendChild(row);
+                }
+            }
+
+            document.getElementById('settingsForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const msg = document.getElementById('settingsMsg');
+                msg.textContent = 'Saving settings...';
+
+                const newSchedule = {};
+                for (let d = 0; d <= 6; d++) {
+                    newSchedule[String(d)] = {
+                        open: document.getElementById(`open_${d}`).value.trim(),
+                        close: document.getElementById(`close_${d}`).value.trim(),
+                        closed: document.getElementById(`closed_${d}`).checked
+                    };
+                }
+
+                const eventsArr = document.getElementById('eventsListInput').value
+                    .split(',')
+                    .map(s => s.trim())
+                    .filter(Boolean);
+
+                const { error } = await sb.from('venue_settings').update({
+                    total_rigs: Number(document.getElementById('totalRigsInput').value),
+                    schedule: newSchedule,
+                    active_events: eventsArr
+                }).eq('id', 1);
+
+                if (error) {
+                    msg.className = 'status-msg error';
+                    msg.textContent = 'Failed to save: ' + error.message;
+                } else {
+                    msg.className = 'status-msg success';
+                    msg.textContent = 'Live hours, rig count, and event list updated on eracing.lk!';
+                }
+            });
+
+            checkAuth();
+        })();
+    </script>
+</body>
+</html>
