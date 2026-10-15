@@ -3,48 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ERACING LANKA | Sim Racing in Thalawathugoda, Sri Lanka</title>
-    <meta name="description" content="Sri Lanka's premier sim racing experience, now open in Thalawathugoda. Book a simulator rig online from LKR 1,200. Partnered with the Ceylon Motor Sports Club and Mora Racing.">
-    <meta name="theme-color" content="#050505">
-    <link rel="canonical" href="https://eracing.lk/">
-
-    <!-- Link previews (WhatsApp, Facebook, etc.) -->
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="ERACING LANKA">
-    <meta property="og:title" content="ERACING LANKA | Sim Racing in Thalawathugoda">
-    <meta property="og:description" content="Now open! Book a sim racing rig online. Partnered with the Ceylon Motor Sports Club and Mora Racing.">
-    <meta property="og:url" content="https://eracing.lk/">
-    <meta property="og:image" content="https://eracing.lk/images/gallery/1.jpg">
-    <meta name="twitter:card" content="summary_large_image">
-
-    <!-- Simple chequered-flag favicon (swap for your own icon file any time) -->
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8F%81%3C/text%3E%3C/svg%3E">
+    <title>ERACING LANKA</title>
 
     <link rel="stylesheet" href="style.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-
-    <!-- Helps Google show your phone, location and hours. Update the hours here if they change. -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "LocalBusiness",
-      "name": "ERACING LANKA",
-      "description": "Sim racing venue in Thalawathugoda, Sri Lanka.",
-      "url": "https://eracing.lk/",
-      "image": "https://eracing.lk/images/gallery/1.jpg",
-      "telephone": "+94770119469",
-      "priceRange": "LKR 1,200 - LKR 6,000",
-      "address": { "@type": "PostalAddress", "addressLocality": "Thalawathugoda", "addressCountry": "LK" },
-      "geo": { "@type": "GeoCoordinates", "latitude": 6.876042, "longitude": 79.927310 },
-      "openingHoursSpecification": [
-        { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Tuesday","Wednesday","Thursday","Friday"], "opens": "15:00", "closes": "23:00" },
-        { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Saturday","Sunday"], "opens": "10:00", "closes": "23:59" }
-      ]
-    }
-    </script>
+    <!-- Supabase Client CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -54,8 +21,9 @@
         <section class="hero">
             <img src="images/logo.png" alt="ERACING LANKA Logo" class="logo">
 
-            <!-- Invisible to visitors (takes no space) but gives Google & screen readers a proper page heading -->
-            <h1 class="sr-only">ERACING LANKA - Sim Racing in Thalawathugoda, Sri Lanka</h1>
+            <h1>
+                <span></span><span>&nbsp;</span>
+            </h1>
 
             <p class="subtitle">Sri Lanka's Premier Sim Racing Experience, now open in Thalawathugoda. Partnered with the Ceylon Motor Sports Club and Mora Racing.</p>
         </section>
@@ -64,12 +32,12 @@
         <section class="gallery">
             <div class="slideshow" id="slideshow">
                 <div class="slide active"><img src="images/gallery/1.jpg" alt="ERACING LANKA rig 1"></div>
-                <div class="slide"><img src="images/gallery/2.jpg" alt="ERACING LANKA rig 2" loading="lazy"></div>
-                <div class="slide"><img src="images/gallery/3.jpg" alt="ERACING LANKA rig 3" loading="lazy"></div>
-                <div class="slide"><img src="images/gallery/4.jpg" alt="ERACING LANKA rig 4" loading="lazy"></div>
+                <div class="slide"><img src="images/gallery/2.jpg" alt="ERACING LANKA rig 2"></div>
+                <div class="slide"><img src="images/gallery/3.jpg" alt="ERACING LANKA rig 3"></div>
+                <div class="slide"><img src="images/gallery/4.jpg" alt="ERACING LANKA rig 4"></div>
 
-                <button type="button" class="slide-arrow prev" id="prevSlide" aria-label="Previous photo">&#10094;</button>
-                <button type="button" class="slide-arrow next" id="nextSlide" aria-label="Next photo">&#10095;</button>
+                <button class="slide-arrow prev" id="prevSlide" aria-label="Previous photo">&#10094;</button>
+                <button class="slide-arrow next" id="nextSlide" aria-label="Next photo">&#10095;</button>
 
                 <div class="slide-dots" id="slideDots"></div>
             </div>
@@ -77,26 +45,24 @@
 
         <div class="checker-divider" aria-hidden="true"></div>
 
-        <!-- PRICING
-             These four cards are only a fallback. The live prices come from the
-             database (venue_settings.prices) and replace these when the page loads. -->
+        <!-- PRICING (Click any card to pre-select duration) -->
         <section class="pricing">
             <p class="section-label">Session Times (Click to Select)</p>
 
-            <div class="price-grid" id="priceGrid">
-                <div class="price-card selectable-card" data-duration="30" data-price="1200" role="button" tabindex="0" aria-pressed="false">
+            <div class="price-grid">
+                <div class="price-card selectable-card" data-duration="30" data-price="1200">
                     <span class="duration">30<small>MIN</small></span>
                     <span class="price"><small>LKR</small>1,200</span>
                 </div>
-                <div class="price-card selectable-card active-card" data-duration="60" data-price="2000" role="button" tabindex="0" aria-pressed="true">
+                <div class="price-card selectable-card active-card" data-duration="60" data-price="2000">
                     <span class="duration">60<small>MIN</small></span>
                     <span class="price"><small>LKR</small>2,000</span>
                 </div>
-                <div class="price-card selectable-card" data-duration="120" data-price="3500" role="button" tabindex="0" aria-pressed="false">
+                <div class="price-card selectable-card" data-duration="120" data-price="3500">
                     <span class="duration">120<small>MIN</small></span>
                     <span class="price"><small>LKR</small>3,500</span>
                 </div>
-                <div class="price-card price-card--best selectable-card" data-duration="240" data-price="6000" role="button" tabindex="0" aria-pressed="false">
+                <div class="price-card price-card--best selectable-card" data-duration="240" data-price="6000">
                     <span class="best-tag">Best Value</span>
                     <span class="duration">240<small>MIN</small></span>
                     <span class="price"><small>LKR</small>6,000</span>
@@ -111,14 +77,14 @@
             <p class="section-label">Reserve Your Grid Slot</p>
 
             <!-- Mode Switcher Tabs -->
-            <div class="mode-tabs" role="tablist">
-                <button type="button" class="mode-tab active" role="tab" aria-selected="true" data-target="rigBookingPanel">Simulator Booking</button>
-                <button type="button" class="mode-tab" role="tab" aria-selected="false" data-target="eventRegPanel">Event Registration</button>
+            <div class="mode-tabs">
+                <button type="button" class="mode-tab active" data-target="rigBookingPanel">Simulator Booking</button>
+                <button type="button" class="mode-tab" data-target="eventRegPanel">Event Registration</button>
             </div>
 
             <!-- PANEL 1: SIMULATOR RIG BOOKING -->
-            <div id="rigBookingPanel" class="booking-panel active" role="tabpanel">
-                <form id="rigBookingForm" class="eracing-form" novalidate>
+            <div id="rigBookingPanel" class="booking-panel active">
+                <form id="rigBookingForm" class="eracing-form">
                     <div class="form-row">
                         <div class="form-group">
                             <label for="bookingDate">1. Select Date</label>
@@ -127,7 +93,10 @@
                         <div class="form-group">
                             <label for="sessionDuration">2. Session Duration</label>
                             <select id="sessionDuration" required>
-                                <option value="60" selected>60 MIN — LKR 2,000</option>
+                                <option value="30" data-price="1200">30 MIN — LKR 1,200</option>
+                                <option value="60" data-price="2000" selected>60 MIN — LKR 2,000</option>
+                                <option value="120" data-price="3500">120 MIN — LKR 3,500</option>
+                                <option value="240" data-price="6000">240 MIN — LKR 6,000</option>
                             </select>
                         </div>
                     </div>
@@ -135,28 +104,26 @@
                     <!-- Dynamic Time Slots -->
                     <div class="form-group">
                         <label>3. Select Start Time <span id="hoursHint" class="label-hint"></span></label>
-                        <div id="timeSlotsGrid" class="slots-grid" aria-live="polite">
-                            <div class="slot-notice loading">Checking live availability...</div>
-                        </div>
-                        <input type="hidden" id="selectedTimeSlot">
+                        <div id="timeSlotsGrid" class="slots-grid"></div>
+                        <input type="hidden" id="selectedTimeSlot" required>
                     </div>
 
-                    <!-- Dynamic Simulator Rigs -->
+                    <!-- Dynamic Simulator Rigs (1 to 10) -->
                     <div class="form-group">
-                        <label>4. Choose Simulator Rig</label>
+                        <label>4. Choose Simulator Rig (1–10)</label>
                         <div id="rigsGrid" class="rigs-grid"></div>
-                        <input type="hidden" id="selectedRig">
+                        <input type="hidden" id="selectedRig" required>
                     </div>
 
                     <!-- Driver Contact Info -->
                     <div class="form-row">
                         <div class="form-group">
                             <label for="custName">Your Name</label>
-                            <input type="text" id="custName" placeholder="e.g. Kasun Perera" autocomplete="name" maxlength="80" required>
+                            <input type="text" id="custName" placeholder="e.g. Kasun Perera" required>
                         </div>
                         <div class="form-group">
                             <label for="custPhone">Phone / WhatsApp</label>
-                            <input type="tel" id="custPhone" placeholder="e.g. 077 123 4567" autocomplete="tel" inputmode="tel" maxlength="20" required>
+                            <input type="tel" id="custPhone" placeholder="e.g. 077 123 4567" required>
                         </div>
                     </div>
 
@@ -165,33 +132,23 @@
                             <label for="paymentMethod">Payment Option</label>
                             <select id="paymentMethod">
                                 <option value="pay_at_venue">Pay at Venue (Cash / Card / QR)</option>
+                                <option value="bank_transfer">Bank Transfer (Upload Slip)</option>
                             </select>
                         </div>
-                        <div class="form-group" id="rigSlipGroup" hidden>
-                            <label for="rigSlipFile">Upload Transfer Slip (JPG/PNG/PDF, max 5 MB)</label>
-                            <input type="file" id="rigSlipFile" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,application/pdf">
+                        <div class="form-group" id="rigSlipGroup" style="display:none;">
+                            <label for="rigSlipFile">Upload Transfer Slip (Image/PDF)</label>
+                            <input type="file" id="rigSlipFile" accept="image/*,.pdf">
                         </div>
-                    </div>
-
-                    <!-- Shown only when Bank Transfer is chosen. Text comes from the database. -->
-                    <div id="bankBox" class="bank-box" hidden>
-                        <p class="bank-title">Transfer the session fee to this account, then upload your slip above:</p>
-                        <div id="bankDetails" class="bank-details"></div>
-                    </div>
-
-                    <!-- Spam trap: real people never see or fill this -->
-                    <div class="hp-field" aria-hidden="true">
-                        <label>Leave this empty <input type="text" id="rigWebsite" tabindex="-1" autocomplete="off"></label>
                     </div>
 
                     <button type="submit" class="submit-btn" id="rigSubmitBtn">Confirm Rig Reservation</button>
-                    <div id="rigStatusMsg" class="status-msg" role="status" aria-live="polite"></div>
+                    <div id="rigStatusMsg" class="status-msg"></div>
                 </form>
             </div>
 
             <!-- PANEL 2: EVENT & TOURNAMENT REGISTRATION -->
-            <div id="eventRegPanel" class="booking-panel" role="tabpanel">
-                <form id="eventRegForm" class="eracing-form" novalidate>
+            <div id="eventRegPanel" class="booking-panel">
+                <form id="eventRegForm" class="eracing-form">
                     <div class="form-group">
                         <label for="eventName">Select Event / Championship</label>
                         <select id="eventName" required>
@@ -204,36 +161,32 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="driverName">Driver Full Name</label>
-                            <input type="text" id="driverName" placeholder="Full Name" autocomplete="name" maxlength="80" required>
+                            <input type="text" id="driverName" placeholder="Full Name" required>
                         </div>
                         <div class="form-group">
                             <label for="driverPhone">WhatsApp Number</label>
-                            <input type="tel" id="driverPhone" placeholder="077 123 4567" autocomplete="tel" inputmode="tel" maxlength="20" required>
+                            <input type="tel" id="driverPhone" placeholder="077 123 4567" required>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
                             <label for="driverEmail">Email Address</label>
-                            <input type="email" id="driverEmail" placeholder="driver@email.com" autocomplete="email" maxlength="120" required>
+                            <input type="email" id="driverEmail" placeholder="driver@email.com" required>
                         </div>
                         <div class="form-group">
                             <label for="simId">Steam / iRacing / Discord ID (Optional)</label>
-                            <input type="text" id="simId" placeholder="Discord or Sim ID" maxlength="80">
+                            <input type="text" id="simId" placeholder="Discord or Sim ID">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="eventSlipFile">Upload Entry Fee Receipt (Optional if Free/Pay at Venue)</label>
-                        <input type="file" id="eventSlipFile" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,application/pdf">
-                    </div>
-
-                    <div class="hp-field" aria-hidden="true">
-                        <label>Leave this empty <input type="text" id="eventWebsite" tabindex="-1" autocomplete="off"></label>
+                        <input type="file" id="eventSlipFile" accept="image/*,.pdf">
                     </div>
 
                     <button type="submit" class="submit-btn" id="eventSubmitBtn">Register for Event</button>
-                    <div id="eventStatusMsg" class="status-msg" role="status" aria-live="polite"></div>
+                    <div id="eventStatusMsg" class="status-msg"></div>
                 </form>
             </div>
 
@@ -253,11 +206,8 @@
         <section class="location">
             <p class="section-label">Find Us</p>
 
-            <address class="address-line">ERACING LANKA &middot; Thalawathugoda, Sri Lanka</address>
-
             <div class="map-frame">
                 <iframe
-                    title="Map showing ERACING LANKA in Thalawathugoda"
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3961.1215065153524!2d79.92730967655103!3d6.876042618962889!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae25190a632e13f%3A0x10c9be4319c1d15a!2sEracing%20Lanka!5e0!3m2!1sen!2slk!4v1789390885057!5m2!1sen!2slk"
                     width="100%"
                     height="300"
@@ -269,760 +219,352 @@
             </div>
 
             <a href="https://maps.app.goo.gl/zFX2qRsncrpAG4ZTA" target="_blank" rel="noopener" class="directions-link">Get Directions →</a>
-
-            <!-- Filled in from the database so it always matches your real schedule -->
-            <div class="hours-box">
-                <p class="hours-title">Opening Hours</p>
-                <table class="hours-table">
-                    <caption class="sr-only">Opening hours</caption>
-                    <tbody id="hoursBody"></tbody>
-                </table>
-            </div>
         </section>
 
     </main>
 
-    <!-- Pinned supabase-js version, loaded at the end so it never blocks the page from showing -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.js"></script>
-
+    <!-- SLIDESHOW + SUPABASE BOOKING ENGINE -->
     <script>
-    /* =====================================================================
-       1. SLIDESHOW
-       ===================================================================== */
-    (function () {
-        var show = document.getElementById('slideshow');
-        var slides = show.querySelectorAll('.slide');
-        var dotsWrap = document.getElementById('slideDots');
-        var current = 0;
-        var timer = null;
-        var paused = false;
-        var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        // 1. SLIDESHOW SCRIPT
+        (function () {
+            var slides = document.querySelectorAll('#slideshow .slide');
+            var dotsWrap = document.getElementById('slideDots');
+            var current = 0;
+            var timer;
 
-        slides.forEach(function (_, i) {
-            var dot = document.createElement('button');
-            dot.type = 'button';
-            dot.className = 'slide-dot' + (i === 0 ? ' active' : '');
-            dot.setAttribute('aria-label', 'Go to photo ' + (i + 1));
-            dot.addEventListener('click', function () { goTo(i); });
-            dotsWrap.appendChild(dot);
-        });
-        var dots = dotsWrap.querySelectorAll('.slide-dot');
+            slides.forEach(function (_, i) {
+                var dot = document.createElement('button');
+                dot.className = 'slide-dot' + (i === 0 ? ' active' : '');
+                dot.setAttribute('aria-label', 'Go to photo ' + (i + 1));
+                dot.addEventListener('click', function () { goTo(i); });
+                dotsWrap.appendChild(dot);
+            });
 
-        function goTo(index) {
-            slides[current].classList.remove('active');
-            dots[current].classList.remove('active');
-            current = (index + slides.length) % slides.length;
-            slides[current].classList.add('active');
-            dots[current].classList.add('active');
+            var dots = dotsWrap.querySelectorAll('.slide-dot');
+
+            function goTo(index) {
+                slides[current].classList.remove('active');
+                dots[current].classList.remove('active');
+                current = (index + slides.length) % slides.length;
+                slides[current].classList.add('active');
+                dots[current].classList.add('active');
+                resetTimer();
+            }
+
+            function next() { goTo(current + 1); }
+            function prev() { goTo(current - 1); }
+
+            function resetTimer() {
+                clearInterval(timer);
+                timer = setInterval(next, 4500);
+            }
+
+            document.getElementById('nextSlide').addEventListener('click', next);
+            document.getElementById('prevSlide').addEventListener('click', prev);
+
             resetTimer();
-        }
-        function next() { goTo(current + 1); }
-        function prev() { goTo(current - 1); }
+        })();
 
-        function resetTimer() {
-            clearInterval(timer);
-            if (!reduceMotion && !paused) timer = setInterval(next, 4500);
-        }
+        // 2. SUPABASE BOOKING & EVENT ENGINE
+        (function () {
+            const SUPABASE_URL = 'https://iswamefyodxucoyrwemz.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlzd2FtZWZ5b2R4dWNveXJ3ZW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5ODk4OTEsImV4cCI6MjEwNzU2NTg5MX0.KxzIyB7CurVDF_50LogzQds4sePcast_vB5AjGpyDF4';
+            const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        document.getElementById('nextSlide').addEventListener('click', next);
-        document.getElementById('prevSlide').addEventListener('click', prev);
-        show.addEventListener('mouseenter', function () { paused = true; clearInterval(timer); });
-        show.addEventListener('mouseleave', function () { paused = false; resetTimer(); });
-        show.addEventListener('focusin', function () { paused = true; clearInterval(timer); });
-        show.addEventListener('focusout', function () { paused = false; resetTimer(); });
-
-        resetTimer();
-    })();
-
-
-    /* =====================================================================
-       2. BOOKING & EVENT ENGINE
-       The browser never writes to your tables directly. It only calls the
-       safe functions from supabase-setup.sql, which re-check everything
-       (price, opening hours, double booking...) on the server.
-       ===================================================================== */
-    (function () {
-        'use strict';
-
-        var SUPABASE_URL = 'https://iswamefyodxucoyrwemz.supabase.co';
-        var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlzd2FtZWZ5b2R4dWNveXJ3ZW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5ODk4OTEsImV4cCI6MjEwNzU2NTg5MX0.KxzIyB7CurVDF_50LogzQds4sePcast_vB5AjGpyDF4';
-
-        var TZ = 'Asia/Colombo';
-        var WHATSAPP_NUMBER = '94770119469';
-        var CALL_NUMBER_TEXT = '077 011 9469';
-        var MAX_FILE_BYTES = 5 * 1024 * 1024;
-        var ALLOWED_FILE_TYPES = {
-            'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp',
-            'image/heic': 'heic', 'image/heif': 'heif', 'application/pdf': 'pdf'
-        };
-        var DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-        // Only used for DISPLAY until the live settings load. The server has the final say.
-        var cfg = {
-            total_rigs: 10,
-            schedule: {
-                '0': { open: '10:00', close: '24:00', closed: false },
-                '1': { open: '15:00', close: '23:00', closed: true },
-                '2': { open: '15:00', close: '23:00', closed: false },
-                '3': { open: '15:00', close: '23:00', closed: false },
-                '4': { open: '15:00', close: '23:00', closed: false },
-                '5': { open: '15:00', close: '23:00', closed: false },
-                '6': { open: '10:00', close: '24:00', closed: false }
-            },
-            active_events: null,
-            prices: null,
-            bank_details: null,
-            booking_window_days: 60
-        };
-
-        var $ = function (id) { return document.getElementById(id); };
-        var dateInput = $('bookingDate');
-        var durationSelect = $('sessionDuration');
-        var slotsGrid = $('timeSlotsGrid');
-        var rigsGrid = $('rigsGrid');
-        var selectedTimeInput = $('selectedTimeSlot');
-        var selectedRigInput = $('selectedRig');
-        var hoursHint = $('hoursHint');
-        var priceGrid = $('priceGrid');
-        var paymentSelect = $('paymentMethod');
-
-        var sb = null;
-        var dayBookings = [];
-        var availabilityOk = false;
-        var clockSkew = 0;           // minutes: server clock minus this device's clock
-        var fetchToken = 0;
-        var lastFetchAt = 0;
-        var fallbackPrices = {};
-
-        /* ---------- small helpers ---------- */
-        function fmtMoney(n) { return Number(n).toLocaleString('en-US'); }
-
-        function toMins(t) { var p = String(t).split(':'); return Number(p[0]) * 60 + Number(p[1]); }
-        function pad2(n) { return String(n).padStart(2, '0'); }
-        function toTimeStr(m) { return pad2(Math.floor(m / 60)) + ':' + pad2(m % 60); }
-
-        function format12Hr(t) {
-            if (t === '24:00') return 'Midnight';
-            var p = String(t).split(':').map(Number);
-            var h = p[0], m = p[1];
-            var suffix = h >= 12 && h < 24 ? 'PM' : 'AM';
-            var hr12 = h % 12 === 0 ? 12 : h % 12;
-            return hr12 + ':' + pad2(m) + ' ' + suffix;
-        }
-
-        function colomboNow() {
-            var parts = new Intl.DateTimeFormat('en-CA', {
-                timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit',
-                hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
-            }).formatToParts(new Date());
-            var get = function (type) {
-                for (var i = 0; i < parts.length; i++) if (parts[i].type === type) return parts[i].value;
-                return '0';
-            };
-            return {
-                date: get('year') + '-' + get('month') + '-' + get('day'),
-                mins: Number(get('hour')) * 60 + Number(get('minute'))
-            };
-        }
-        function nowInfo() { var c = colomboNow(); return { date: c.date, mins: c.mins + clockSkew }; }
-
-        function addDays(dateStr, n) {
-            var d = new Date(dateStr + 'T00:00:00Z');
-            d.setUTCDate(d.getUTCDate() + n);
-            return d.toISOString().slice(0, 10);
-        }
-        function dayOfWeek(dateStr) { return new Date(dateStr + 'T00:00:00Z').getUTCDay(); }
-        function ruleFor(dateStr) { return cfg.schedule[String(dayOfWeek(dateStr))]; }
-        function isOpenDay(dateStr) { var r = ruleFor(dateStr); return !!(r && !r.closed); }
-
-        function prettyDate(dateStr) {
-            return new Date(dateStr + 'T00:00:00Z').toLocaleDateString('en-GB', {
-                weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC'
-            });
-        }
-
-        function el(tag, className, text) {
-            var e = document.createElement(tag);
-            if (className) e.className = className;
-            if (text !== undefined) e.textContent = text;
-            return e;
-        }
-
-        function digitsOf(s) { return String(s || '').replace(/\D/g, ''); }
-
-        function friendlyError(err) {
-            var msg = (err && err.message) || '';
-            // Messages we wrote ourselves in the database functions use code P0001
-            if (err && err.code === 'P0001' && msg) return msg;
-            if (err && err.__userMessage) return msg;
-            if (/failed to fetch|networkerror|load failed|network request failed/i.test(msg)) {
-                return "Couldn't reach the server. Check your connection and try again, or call us on " + CALL_NUMBER_TEXT + '.';
-            }
-            return 'Something went wrong. Please try again, or call us on ' + CALL_NUMBER_TEXT + '.';
-        }
-        function userError(message) { var e = new Error(message); e.__userMessage = true; return e; }
-
-        function clearNode(node) { while (node.firstChild) node.removeChild(node.firstChild); }
-
-        function setStatus(node, kind, text) {
-            clearNode(node);
-            node.className = 'status-msg' + (kind ? ' ' + kind : '');
-            if (text) node.textContent = text;
-        }
-
-        function notice(container, text, kind, withRetry) {
-            clearNode(container);
-            var box = el('div', 'slot-notice' + (kind ? ' ' + kind : ''), text);
-            if (withRetry) {
-                var btn = el('button', 'retry-btn', 'Try again');
-                btn.type = 'button';
-                btn.addEventListener('click', fetchAvailability);
-                box.appendChild(document.createTextNode(' '));
-                box.appendChild(btn);
-            }
-            container.appendChild(box);
-        }
-
-        /* ---------- prices: one source (database), HTML cards are the fallback ---------- */
-        function readPricesFromDom() {
-            var out = {};
-            priceGrid.querySelectorAll('[data-duration]').forEach(function (c) {
-                out[c.getAttribute('data-duration')] = Number(c.getAttribute('data-price'));
-            });
-            return out;
-        }
-
-        function setActiveCard() {
-            priceGrid.querySelectorAll('.selectable-card').forEach(function (c) {
-                var on = c.getAttribute('data-duration') === String(durationSelect.value);
-                c.classList.toggle('active-card', on);
-                c.setAttribute('aria-pressed', on ? 'true' : 'false');
-            });
-        }
-
-        function chooseDuration(d) {
-            durationSelect.value = String(d);
-            setActiveCard();
-            if (availabilityOk) renderTimeSlots();
-        }
-
-        function makeCard(d, price, isBest) {
-            var card = el('div', 'price-card selectable-card' + (isBest ? ' price-card--best' : ''));
-            card.setAttribute('data-duration', d);
-            card.setAttribute('data-price', price);
-            card.setAttribute('role', 'button');
-            card.tabIndex = 0;
-            card.setAttribute('aria-pressed', 'false');
-            if (isBest) card.appendChild(el('span', 'best-tag', 'Best Value'));
-
-            var dur = el('span', 'duration', String(d));
-            dur.appendChild(el('small', '', 'MIN'));
-            var pr = el('span', 'price');
-            pr.appendChild(el('small', '', 'LKR'));
-            pr.appendChild(document.createTextNode(fmtMoney(price)));
-            card.appendChild(dur);
-            card.appendChild(pr);
-
-            card.addEventListener('click', function () {
-                chooseDuration(d);
-                $('bookingSection').scrollIntoView({ behavior: 'smooth' });
-            });
-            card.addEventListener('keydown', function (e) {
-                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); card.click(); }
-            });
-            return card;
-        }
-
-        function buildPrices(prices) {
-            var keep = durationSelect.value;
-            var durs = Object.keys(prices).map(Number)
-                .filter(function (n) { return n > 0 && isFinite(prices[n]); })
-                .sort(function (a, b) { return a - b; });
-            if (!durs.length) return;
-
-            clearNode(priceGrid);
-            clearNode(durationSelect);
-            durs.forEach(function (d, i) {
-                priceGrid.appendChild(makeCard(d, prices[d], durs.length > 1 && i === durs.length - 1));
-                var o = el('option', '', d + ' MIN — LKR ' + fmtMoney(prices[d]));
-                o.value = String(d);
-                durationSelect.appendChild(o);
-            });
-            var pick = durs.indexOf(Number(keep)) > -1 ? Number(keep) : (durs.indexOf(60) > -1 ? 60 : durs[0]);
-            durationSelect.value = String(pick);
-            setActiveCard();
-        }
-
-        /* ---------- opening hours table ---------- */
-        function renderHours() {
-            var body = $('hoursBody');
-            clearNode(body);
-            var today = dayOfWeek(colomboNow().date);
-            [1, 2, 3, 4, 5, 6, 0].forEach(function (d) {
-                var rule = cfg.schedule[String(d)];
-                var closed = !rule || rule.closed;
-                var tr = el('tr', d === today ? 'today' : '');
-                tr.appendChild(el('th', '', DAY_NAMES[d].slice(0, 3)));
-                tr.appendChild(el('td', closed ? 'closed' : '',
-                    closed ? 'Closed' : format12Hr(rule.open) + ' – ' + format12Hr(rule.close)));
-                body.appendChild(tr);
-            });
-        }
-
-        /* ---------- settings from the database ---------- */
-        async function loadSettings() {
-            try {
-                var res = await sb.rpc('get_public_settings');
-                var s = res && res.data;
-                if (res.error || !s) return;
-                if (Number(s.total_rigs) > 0) cfg.total_rigs = Number(s.total_rigs);
-                if (s.schedule && typeof s.schedule === 'object') cfg.schedule = s.schedule;
-                if (Array.isArray(s.active_events) && s.active_events.length) cfg.active_events = s.active_events;
-                if (s.prices && typeof s.prices === 'object' && Object.keys(s.prices).length) cfg.prices = s.prices;
-                if (typeof s.bank_details === 'string' && s.bank_details.trim()) cfg.bank_details = s.bank_details.trim();
-                if (Number(s.booking_window_days) > 0) cfg.booking_window_days = Number(s.booking_window_days);
-            } catch (e) { /* keep the display defaults */ }
-        }
-
-        function populateEvents() {
-            if (!cfg.active_events) return;
-            var sel = $('eventName');
-            clearNode(sel);
-            cfg.active_events.forEach(function (name) {
-                var o = el('option', '', String(name));
-                o.value = String(name);
-                sel.appendChild(o);
-            });
-        }
-
-        function syncPaymentOptions() {
-            var bankOpt = null;
-            for (var i = 0; i < paymentSelect.options.length; i++) {
-                if (paymentSelect.options[i].value === 'bank_transfer') bankOpt = paymentSelect.options[i];
-            }
-            if (cfg.bank_details) {
-                if (!bankOpt) {
-                    var o = el('option', '', 'Bank Transfer (Upload Slip)');
-                    o.value = 'bank_transfer';
-                    paymentSelect.appendChild(o);
+            // Default schedule fallback (matches database settings)
+            let venueConfig = {
+                total_rigs: 10,
+                schedule: {
+                    "0": { open: "10:00", close: "24:00", closed: false }, // Sun
+                    "1": { open: "15:00", close: "23:00", closed: true },  // Mon (Closed)
+                    "2": { open: "15:00", close: "23:00", closed: false }, // Tue
+                    "3": { open: "15:00", close: "23:00", closed: false }, // Wed
+                    "4": { open: "15:00", close: "23:00", closed: false }, // Thu
+                    "5": { open: "15:00", close: "23:00", closed: false }, // Fri
+                    "6": { open: "10:00", close: "24:00", closed: false }  // Sat
                 }
-                $('bankDetails').textContent = cfg.bank_details;
-            } else if (bankOpt) {
-                paymentSelect.removeChild(bankOpt);
+            };
+
+            let dayBookings = [];
+            const dateInput = document.getElementById('bookingDate');
+            const durationSelect = document.getElementById('sessionDuration');
+            const slotsGrid = document.getElementById('timeSlotsGrid');
+            const rigsGrid = document.getElementById('rigsGrid');
+            const selectedTimeInput = document.getElementById('selectedTimeSlot');
+            const selectedRigInput = document.getElementById('selectedRig');
+            const hoursHint = document.getElementById('hoursHint');
+
+            // Helper: Convert "HH:MM" to minutes from midnight
+            function toMins(timeStr) {
+                const parts = timeStr.split(':').map(Number);
+                return parts[0] * 60 + parts[1];
             }
-            onPaymentChange();
-        }
 
-        function onPaymentChange() {
-            var bank = paymentSelect.value === 'bank_transfer';
-            $('rigSlipGroup').hidden = !bank;
-            $('bankBox').hidden = !bank;
-            $('rigSlipFile').required = bank;
-        }
-
-        /* ---------- date picker ---------- */
-        function hasFutureSlots(dateStr, duration) {
-            var rule = ruleFor(dateStr);
-            if (!rule || rule.closed) return false;
-            var lastStart = toMins(rule.close) - duration;
-            if (toMins(rule.open) > lastStart) return false;
-            if (dateStr === nowInfo().date) return lastStart >= nowInfo().mins + 15;
-            return true;
-        }
-
-        function setupDateInput() {
-            var today = nowInfo().date;
-            var max = addDays(today, cfg.booking_window_days);
-            dateInput.min = today;
-            dateInput.max = max;
-
-            var duration = Number(durationSelect.value) || 60;
-            var d = today;
-            for (var i = 0; i <= cfg.booking_window_days; i++) {
-                if (hasFutureSlots(d, duration)) break;
-                d = addDays(d, 1);
+            // Helper: Convert minutes from midnight to "HH:MM"
+            function toTimeStr(mins) {
+                const h = Math.floor(mins / 60);
+                const m = mins % 60;
+                return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
             }
-            dateInput.value = d > max ? today : d;
-        }
 
-        /* ---------- live availability ---------- */
-        function isRigAvailable(rigNum, startMins, durationMins) {
-            var endMins = startMins + durationMins;
-            for (var i = 0; i < dayBookings.length; i++) {
-                var b = dayBookings[i];
-                if (Number(b.rig_number) !== rigNum) continue;
-                var bStart = toMins(b.time_slot);
-                var bEnd = bStart + (Number(b.duration_mins) || 60);
-                if (startMins < bEnd && endMins > bStart) return false;
+            // Helper: Format "15:00" to "3:00 PM"
+            function format12Hr(timeStr) {
+                const [h, m] = timeStr.split(':').map(Number);
+                const suffix = h >= 12 && h < 24 ? 'PM' : 'AM';
+                const hr12 = h % 12 === 0 ? 12 : h % 12;
+                return hr12 + ':' + String(m).padStart(2, '0') + ' ' + suffix;
             }
-            return true;
-        }
 
-        async function fetchAvailability() {
-            var token = ++fetchToken;
-            var date = dateInput.value;
-            if (!date) return;
-
-            availabilityOk = false;
-            selectedTimeInput.value = '';
-            selectedRigInput.value = '';
-            clearNode(rigsGrid);
-            notice(slotsGrid, 'Checking live availability...', 'loading');
-
-            try {
-                var res = await sb.rpc('get_rig_availability', { p_date: date });
-                if (token !== fetchToken) return;          // a newer request replaced this one
-                if (res.error || !res.data) throw (res.error || new Error('No data'));
-
-                dayBookings = Array.isArray(res.data.bookings) ? res.data.bookings : [];
-                if (typeof res.data.now_mins === 'number') {
-                    clockSkew = res.data.now_mins - colomboNow().mins;
-                    if (Math.abs(clockSkew) > 720) clockSkew = 0;
+            // Check if a specific rig is free for [startMins, startMins + durationMins)
+            function isRigAvailable(rigNum, startMins, durationMins) {
+                const endMins = startMins + durationMins;
+                for (const b of dayBookings) {
+                    if (Number(b.rig_number) !== rigNum) continue;
+                    const bStart = toMins(b.time_slot);
+                    const bDur = Number(b.duration_mins) || (Number(b.duration_hours || 1) * 60);
+                    const bEnd = bStart + bDur;
+                    if (startMins < bEnd && endMins > bStart) {
+                        return false; // Overlaps existing booking
+                    }
                 }
-                availabilityOk = true;
-                lastFetchAt = Date.now();
+                return true;
+            }
+
+            // Load editable settings from Supabase
+            async function initBookingSystem() {
+                const { data } = await sb.from('venue_settings').select('*').eq('id', 1).maybeSingle();
+                if (data) {
+                    venueConfig.total_rigs = data.total_rigs || 10;
+                    if (data.schedule) venueConfig.schedule = data.schedule;
+                    if (Array.isArray(data.active_events) && data.active_events.length) {
+                        const evSelect = document.getElementById('eventName');
+                        evSelect.innerHTML = data.active_events.map(e => `<option value="${e}">${e}</option>`).join('');
+                    }
+                }
+
+                // Set default date to today (or tomorrow if Monday)
+                const today = new Date();
+                if (today.getDay() === 1) today.setDate(today.getDate() + 1);
+                const yyyy = today.getFullYear();
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const dd = String(today.getDate()).padStart(2, '0');
+                dateInput.min = `${yyyy}-${mm}-${dd}`;
+                dateInput.value = `${yyyy}-${mm}-${dd}`;
+
+                await fetchBookingsForDate(dateInput.value);
+            }
+
+            async function fetchBookingsForDate(dateStr) {
+                slotsGrid.innerHTML = '<span class="loading-text">Checking live telemetry...</span>';
+                const { data } = await sb
+                    .from('rig_bookings')
+                    .select('rig_number, time_slot, duration_mins, duration_hours, status')
+                    .eq('booking_date', dateStr)
+                    .neq('status', 'cancelled');
+
+                dayBookings = data || [];
                 renderTimeSlots();
-            } catch (e) {
-                if (token !== fetchToken) return;
-                availabilityOk = false;
-                notice(slotsGrid, "We couldn't load live availability, so booking is paused to avoid clashes. Please try again or call us on " + CALL_NUMBER_TEXT + '.', 'error', true);
-            }
-        }
-
-        function renderTimeSlots() {
-            clearNode(slotsGrid);
-            clearNode(rigsGrid);
-            selectedTimeInput.value = '';
-            selectedRigInput.value = '';
-            if (!dateInput.value) return;
-
-            var rule = ruleFor(dateInput.value);
-            var dow = dayOfWeek(dateInput.value);
-            if (!rule || rule.closed) {
-                hoursHint.textContent = '(CLOSED ON ' + DAY_NAMES[dow].toUpperCase() + 'S)';
-                notice(slotsGrid, 'Track closed on ' + DAY_NAMES[dow] + 's — please pick another day.', 'warn');
-                return;
             }
 
-            var openMins = toMins(rule.open);
-            var closeMins = toMins(rule.close);
-            var durationMins = Number(durationSelect.value);
-            var now = nowInfo();
-            var isToday = dateInput.value === now.date;
+            function renderTimeSlots() {
+                slotsGrid.innerHTML = '';
+                rigsGrid.innerHTML = '<span class="loading-text">Select a start time above to see available rigs.</span>';
+                selectedTimeInput.value = '';
+                selectedRigInput.value = '';
 
-            hoursHint.textContent = '(' + format12Hr(rule.open) + ' – ' + format12Hr(rule.close) + ')';
+                if (!dateInput.value) return;
+                const [y, m, d] = dateInput.value.split('-').map(Number);
+                const dayOfWeek = new Date(y, m - 1, d).getDay();
+                const dayRule = venueConfig.schedule[String(dayOfWeek)];
 
-            var shown = 0;
-            for (var t = openMins; t + durationMins <= closeMins; t += 30) {
-                if (isToday && t < now.mins + 15) continue;      // already started / too soon
-
-                var freeCount = 0;
-                for (var r = 1; r <= cfg.total_rigs; r++) {
-                    if (isRigAvailable(r, t, durationMins)) freeCount++;
+                if (!dayRule || dayRule.closed) {
+                    hoursHint.textContent = '(CLOSED ON MONDAYS)';
+                    slotsGrid.innerHTML = '<div class="closed-banner">Track Closed on Mondays — Please pick another day.</div>';
+                    return;
                 }
-                slotsGrid.appendChild(makeSlotButton(t, durationMins, freeCount));
-                shown++;
-            }
 
-            if (!shown) {
-                notice(slotsGrid, isToday
-                    ? 'No start times left today — please pick another date.'
-                    : "This session length doesn't fit our opening hours that day.", 'warn');
-            }
-        }
+                const openMins = toMins(dayRule.open);
+                const closeMins = toMins(dayRule.close);
+                const durationMins = Number(durationSelect.value);
 
-        function makeSlotButton(t, durationMins, freeCount) {
-            var slotStr = toTimeStr(t);
-            var btn = el('button', 'slot-btn' + (freeCount === 0 ? ' full' : ''));
-            btn.type = 'button';
-            btn.disabled = freeCount === 0;
-            btn.appendChild(el('span', '', format12Hr(slotStr)));
-            btn.appendChild(el('small', '', freeCount + '/' + cfg.total_rigs + ' FREE'));
-            btn.addEventListener('click', function () {
-                slotsGrid.querySelectorAll('.slot-btn').forEach(function (b) { b.classList.remove('selected'); });
-                btn.classList.add('selected');
-                selectedTimeInput.value = slotStr;
-                renderRigs(t, durationMins);
-            });
-            return btn;
-        }
+                hoursHint.textContent = `(${format12Hr(dayRule.open)} – ${dayRule.close === '24:00' ? 'Midnight' : format12Hr(dayRule.close)})`;
 
-        function renderRigs(startMins, durationMins) {
-            clearNode(rigsGrid);
-            selectedRigInput.value = '';
-            for (var r = 1; r <= cfg.total_rigs; r++) {
-                (function (rig) {
-                    var free = isRigAvailable(rig, startMins, durationMins);
-                    var btn = el('button', 'rig-btn' + (free ? '' : ' booked'));
+                for (let t = openMins; t + durationMins <= closeMins; t += 30) {
+                    const slotStr = toTimeStr(t);
+                    // Count how many rigs are free for this slot + duration
+                    let freeCount = 0;
+                    for (let r = 1; r <= venueConfig.total_rigs; r++) {
+                        if (isRigAvailable(r, t, durationMins)) freeCount++;
+                    }
+
+                    const btn = document.createElement('button');
                     btn.type = 'button';
+                    btn.className = 'slot-btn' + (freeCount === 0 ? ' full' : '');
+                    btn.disabled = freeCount === 0;
+                    btn.innerHTML = `<span>${format12Hr(slotStr)}</span><small>${freeCount}/${venueConfig.total_rigs} FREE</small>`;
+                    btn.addEventListener('click', function () {
+                        document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+                        btn.classList.add('selected');
+                        selectedTimeInput.value = slotStr;
+                        renderRigs(t, durationMins);
+                    });
+                    slotsGrid.appendChild(btn);
+                }
+            }
+
+            function renderRigs(startMins, durationMins) {
+                rigsGrid.innerHTML = '';
+                selectedRigInput.value = '';
+
+                for (let r = 1; r <= venueConfig.total_rigs; r++) {
+                    const free = isRigAvailable(r, startMins, durationMins);
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'rig-btn' + (free ? '' : ' booked');
                     btn.disabled = !free;
-                    btn.appendChild(el('strong', '', 'SIM ' + rig));
-                    btn.appendChild(el('small', '', free ? 'OPEN' : 'BOOKED'));
+                    btn.innerHTML = `<strong>SIM ${r}</strong><small>${free ? 'OPEN' : 'BOOKED'}</small>`;
                     if (free) {
                         btn.addEventListener('click', function () {
-                            rigsGrid.querySelectorAll('.rig-btn').forEach(function (b) { b.classList.remove('selected'); });
+                            document.querySelectorAll('.rig-btn').forEach(b => b.classList.remove('selected'));
                             btn.classList.add('selected');
-                            selectedRigInput.value = rig;
+                            selectedRigInput.value = r;
                         });
                     }
                     rigsGrid.appendChild(btn);
-                })(r);
-            }
-        }
-
-        /* ---------- uploads ---------- */
-        function validateFile(file) {
-            if (!ALLOWED_FILE_TYPES[file.type]) return 'Please upload a JPG, PNG, WebP, HEIC or PDF file.';
-            if (file.size > MAX_FILE_BYTES) return 'That file is too large. Please keep it under 5 MB.';
-            return null;
-        }
-
-        function randomId() {
-            if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
-            var a = new Uint8Array(16);
-            crypto.getRandomValues(a);
-            return Array.prototype.map.call(a, function (b) { return pad2(b.toString(16)); }).join('');
-        }
-
-        async function uploadSlip(fileInput) {
-            var file = fileInput.files && fileInput.files[0];
-            if (!file) return null;
-            var problem = validateFile(file);
-            if (problem) throw userError(problem);
-
-            var path = randomId() + '.' + ALLOWED_FILE_TYPES[file.type];
-            var up = await sb.storage.from('payment-slips').upload(path, file, { contentType: file.type, upsert: false });
-            if (up.error) throw userError('We could not upload your file. Please try again, or call us on ' + CALL_NUMBER_TEXT + '.');
-            return sb.storage.from('payment-slips').getPublicUrl(path).data.publicUrl;
-        }
-
-        /* ---------- confirmation card ---------- */
-        function showConfirmation(container, opts) {
-            clearNode(container);
-            container.className = 'status-msg';
-            var card = el('div', 'confirm-card' + (opts.pending ? ' pending' : ''));
-            card.appendChild(el('h3', '', opts.title));
-
-            var ref = el('div', 'confirm-ref');
-            ref.appendChild(el('span', 'confirm-ref-label', 'Your reference'));
-            ref.appendChild(el('span', 'confirm-ref-code', opts.reference));
-            card.appendChild(ref);
-
-            var list = el('ul', 'confirm-lines');
-            opts.lines.forEach(function (line) { list.appendChild(el('li', '', line)); });
-            card.appendChild(list);
-
-            if (opts.note) card.appendChild(el('p', 'confirm-note', opts.note));
-
-            var wa = el('a', 'whatsapp-btn', 'Send these details to us on WhatsApp');
-            wa.href = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(opts.whatsappText);
-            wa.target = '_blank';
-            wa.rel = 'noopener';
-            card.appendChild(wa);
-
-            card.appendChild(el('p', 'confirm-note small', 'Tip: take a screenshot so you have your reference handy.'));
-            container.appendChild(card);
-            container.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-
-        /* ---------- submit: rig booking ---------- */
-        async function submitRigBooking(e) {
-            e.preventDefault();
-            var statusEl = $('rigStatusMsg');
-            var submitBtn = $('rigSubmitBtn');
-            setStatus(statusEl, '', '');
-
-            if ($('rigWebsite').value) {            // spam trap filled: pretend all is well
-                setStatus(statusEl, 'success', 'Booked!');
-                return;
+                }
             }
 
-            var name = $('custName').value.trim();
-            var phone = $('custPhone').value.trim();
-            var bank = paymentSelect.value === 'bank_transfer';
-            var slipInput = $('rigSlipFile');
+            // Event listeners for date, duration, and price cards
+            dateInput.addEventListener('change', () => fetchBookingsForDate(dateInput.value));
+            durationSelect.addEventListener('change', renderTimeSlots);
 
-            if (!availabilityOk) return setStatus(statusEl, 'error', 'Live availability is not loaded yet. Please try again in a moment.');
-            if (!selectedTimeInput.value || !selectedRigInput.value) return setStatus(statusEl, 'error', 'Please select both a Start Time and a Simulator Rig.');
-            if (name.length < 2) return setStatus(statusEl, 'error', 'Please enter your name.');
-            var d = digitsOf(phone).length;
-            if (d < 9 || d > 15) return setStatus(statusEl, 'error', 'Please enter a valid phone number.');
-            if (bank && !(slipInput.files && slipInput.files[0])) return setStatus(statusEl, 'error', 'Please upload your bank transfer slip.');
-
-            var time = selectedTimeInput.value;
-            var rig = Number(selectedRigInput.value);
-            var date = dateInput.value;
-            var duration = Number(durationSelect.value);
-
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Locking Grid Slot...';
-            try {
-                var slipUrl = bank ? await uploadSlip(slipInput) : null;
-                var res = await sb.rpc('create_rig_booking', {
-                    p_name: name,
-                    p_phone: phone,
-                    p_rig: rig,
-                    p_date: date,
-                    p_time: time,
-                    p_duration: duration,
-                    p_payment_method: paymentSelect.value,
-                    p_slip_url: slipUrl
+            document.querySelectorAll('.selectable-card').forEach(card => {
+                card.addEventListener('click', function () {
+                    document.querySelectorAll('.selectable-card').forEach(c => c.classList.remove('active-card'));
+                    card.classList.add('active-card');
+                    durationSelect.value = card.getAttribute('data-duration');
+                    renderTimeSlots();
+                    document.getElementById('bookingSection').scrollIntoView({ behavior: 'smooth' });
                 });
-                if (res.error) throw res.error;
-                var b = res.data;
-                var pending = b.status === 'pending';
-
-                var lines = [
-                    'SIM ' + b.rig + ' · ' + prettyDate(b.date),
-                    format12Hr(b.time) + ' · ' + b.duration + ' MIN',
-                    (pending ? 'Fee: LKR ' : 'Pay at venue: LKR ') + fmtMoney(b.price)
-                ];
-                showConfirmation(statusEl, {
-                    title: pending ? 'Booking received!' : "You're on the grid!",
-                    pending: pending,
-                    reference: b.reference,
-                    lines: lines,
-                    note: pending
-                        ? "Your rig is held while we check your transfer slip. We'll confirm shortly."
-                        : 'Just turn up a few minutes early and pay at the venue.',
-                    whatsappText: 'Hi ERACING LANKA! Booking ' + b.reference + ': SIM ' + b.rig + ', ' + prettyDate(b.date) +
-                        ' at ' + format12Hr(b.time) + ' (' + b.duration + ' min). Name: ' + name + '.'
-                });
-
-                $('custName').value = '';
-                $('custPhone').value = '';
-                slipInput.value = '';
-                await fetchAvailability();
-            } catch (err) {
-                setStatus(statusEl, 'error', friendlyError(err));
-                if (err && err.code === 'P0001') fetchAvailability();   // refresh so taken rigs show as booked
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Confirm Rig Reservation';
-            }
-        }
-
-        /* ---------- submit: event registration ---------- */
-        async function submitEventRegistration(e) {
-            e.preventDefault();
-            var statusEl = $('eventStatusMsg');
-            var submitBtn = $('eventSubmitBtn');
-            setStatus(statusEl, '', '');
-
-            if ($('eventWebsite').value) {
-                setStatus(statusEl, 'success', 'Registration received! See you on the grid.');
-                return;
-            }
-
-            var event = $('eventName').value;
-            var name = $('driverName').value.trim();
-            var phone = $('driverPhone').value.trim();
-            var email = $('driverEmail').value.trim();
-            var simId = $('simId').value.trim();
-            var slipInput = $('eventSlipFile');
-
-            if (name.length < 2) return setStatus(statusEl, 'error', 'Please enter your full name.');
-            var d = digitsOf(phone).length;
-            if (d < 9 || d > 15) return setStatus(statusEl, 'error', 'Please enter a valid WhatsApp number.');
-            if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return setStatus(statusEl, 'error', 'Please enter a valid email address.');
-
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Submitting Entry...';
-            try {
-                var slipUrl = await uploadSlip(slipInput);
-                var res = await sb.rpc('create_event_registration', {
-                    p_event: event,
-                    p_name: name,
-                    p_phone: phone,
-                    p_email: email,
-                    p_sim_id: simId || null,
-                    p_slip_url: slipUrl
-                });
-                if (res.error) throw res.error;
-
-                showConfirmation(statusEl, {
-                    title: 'Registration received!',
-                    pending: true,
-                    reference: res.data.reference,
-                    lines: [res.data.event, name],
-                    note: "We'll be in touch on WhatsApp or email to confirm your entry.",
-                    whatsappText: 'Hi ERACING LANKA! I just registered for ' + res.data.event + '. Ref ' + res.data.reference + '. Name: ' + name + '.'
-                });
-                $('eventRegForm').reset();
-            } catch (err) {
-                setStatus(statusEl, 'error', friendlyError(err));
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Register for Event';
-            }
-        }
-
-        /* ---------- wiring ---------- */
-        function wireStaticEvents() {
-            durationSelect.addEventListener('change', function () { setActiveCard(); if (availabilityOk) renderTimeSlots(); });
-            paymentSelect.addEventListener('change', onPaymentChange);
-
-            dateInput.addEventListener('change', function () {
-                if (dateInput.min && dateInput.value < dateInput.min) dateInput.value = dateInput.min;
-                if (dateInput.max && dateInput.value > dateInput.max) dateInput.value = dateInput.max;
-                fetchAvailability();
             });
 
-            document.querySelectorAll('.mode-tab').forEach(function (tab) {
+            // Mode Tabs (Simulator Booking vs Event Registration)
+            document.querySelectorAll('.mode-tab').forEach(tab => {
                 tab.addEventListener('click', function () {
-                    document.querySelectorAll('.mode-tab').forEach(function (t) {
-                        t.classList.remove('active');
-                        t.setAttribute('aria-selected', 'false');
-                    });
-                    document.querySelectorAll('.booking-panel').forEach(function (p) { p.classList.remove('active'); });
+                    document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.booking-panel').forEach(p => p.classList.remove('active'));
                     tab.classList.add('active');
-                    tab.setAttribute('aria-selected', 'true');
-                    $(tab.getAttribute('data-target')).classList.add('active');
+                    document.getElementById(tab.getAttribute('data-target')).classList.add('active');
                 });
             });
 
-            // Come back to an old tab? Refresh availability so it is not stale.
-            document.addEventListener('visibilitychange', function () {
-                if (!document.hidden && sb && Date.now() - lastFetchAt > 2 * 60 * 1000) fetchAvailability();
+            // Toggle Slip Upload on Rig Booking
+            document.getElementById('paymentMethod').addEventListener('change', function (e) {
+                document.getElementById('rigSlipGroup').style.display = e.target.value === 'bank_transfer' ? 'flex' : 'none';
             });
 
-            $('rigBookingForm').addEventListener('submit', submitRigBooking);
-            $('eventRegForm').addEventListener('submit', submitEventRegistration);
-        }
-
-        function bookingUnavailable() {
-            ['rigBookingForm', 'eventRegForm'].forEach(function (id) {
-                var form = $(id);
-                clearNode(form);
-                form.appendChild(el('div', 'slot-notice error',
-                    'Online booking is temporarily unavailable. Please call us on ' + CALL_NUMBER_TEXT + ' to book.'));
-            });
-        }
-
-        async function init() {
-            fallbackPrices = readPricesFromDom();
-            renderHours();
-            buildPrices(fallbackPrices);     // cards work instantly; replaced if the database has different prices
-
-            if (!window.supabase || !window.supabase.createClient) {
-                bookingUnavailable();
-                return;
+            // Helper: Upload payment slip to Supabase Storage
+            async function uploadSlipFile(fileInput) {
+                if (!fileInput.files || !fileInput.files[0]) return null;
+                const file = fileInput.files[0];
+                const ext = file.name.split('.').pop();
+                const filePath = `slip_${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${ext}`;
+                const { error } = await sb.storage.from('payment-slips').upload(filePath, file);
+                if (error) throw error;
+                const { data } = sb.storage.from('payment-slips').getPublicUrl(filePath);
+                return data.publicUrl;
             }
-            sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            wireStaticEvents();
 
-            await loadSettings();
+            // Submit Rig Booking
+            document.getElementById('rigBookingForm').addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const statusEl = document.getElementById('rigStatusMsg');
+                const submitBtn = document.getElementById('rigSubmitBtn');
 
-            buildPrices(cfg.prices || fallbackPrices);
-            populateEvents();
-            syncPaymentOptions();
-            renderHours();
-            setupDateInput();
-            await fetchAvailability();
-        }
+                if (!selectedTimeInput.value || !selectedRigInput.value) {
+                    statusEl.className = 'status-msg error';
+                    statusEl.textContent = 'Please select both a Start Time and a Simulator Rig (1–10).';
+                    return;
+                }
 
-        init();
-    })();
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Locking Grid Slot...';
+                statusEl.textContent = '';
+
+                try {
+                    const slipUrl = await uploadSlipFile(document.getElementById('rigSlipFile'));
+                    const durMins = Number(durationSelect.value);
+                    const priceMap = { 30: 1200, 60: 2000, 120: 3500, 240: 6000 };
+
+                    const { error } = await sb.from('rig_bookings').insert([{
+                        customer_name: document.getElementById('custName').value.trim(),
+                        customer_phone: document.getElementById('custPhone').value.trim(),
+                        rig_number: Number(selectedRigInput.value),
+                        booking_date: dateInput.value,
+                        time_slot: selectedTimeInput.value,
+                        duration_mins: durMins,
+                        duration_hours: Math.ceil(durMins / 60),
+                        price_lkr: priceMap[durMins] || 2000,
+                        payment_method: document.getElementById('paymentMethod').value,
+                        payment_slip_url: slipUrl,
+                        status: 'confirmed'
+                    }]);
+
+                    if (error) throw error;
+
+                    statusEl.className = 'status-msg success';
+                    statusEl.textContent = `Booked! SIM ${selectedRigInput.value} is locked for ${format12Hr(selectedTimeInput.value)} (${durMins} MIN) on ${dateInput.value}.`;
+                    document.getElementById('custName').value = '';
+                    document.getElementById('custPhone').value = '';
+                    await fetchBookingsForDate(dateInput.value);
+                } catch (err) {
+                    statusEl.className = 'status-msg error';
+                    statusEl.textContent = 'Error saving booking: ' + (err.message || 'Slot may have just been taken.');
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Confirm Rig Reservation';
+                }
+            });
+
+            // Submit Event Registration
+            document.getElementById('eventRegForm').addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const statusEl = document.getElementById('eventStatusMsg');
+                const submitBtn = document.getElementById('eventSubmitBtn');
+
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Submitting Entry...';
+                statusEl.textContent = '';
+
+                try {
+                    const slipUrl = await uploadSlipFile(document.getElementById('eventSlipFile'));
+
+                    const { error } = await sb.from('event_registrations').insert([{
+                        event_name: document.getElementById('eventName').value,
+                        driver_name: document.getElementById('driverName').value.trim(),
+                        driver_phone: document.getElementById('driverPhone').value.trim(),
+                        driver_email: document.getElementById('driverEmail').value.trim(),
+                        sim_id: document.getElementById('simId').value.trim(),
+                        payment_slip_url: slipUrl,
+                        status: 'pending'
+                    }]);
+
+                    if (error) throw error;
+
+                    statusEl.className = 'status-msg success';
+                    statusEl.textContent = 'Registration received! See you on the grid.';
+                    document.getElementById('eventRegForm').reset();
+                } catch (err) {
+                    statusEl.className = 'status-msg error';
+                    statusEl.textContent = 'Registration failed: ' + err.message;
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Register for Event';
+                }
+            });
+
+            initBookingSystem();
+        })();
     </script>
 
 </body>
