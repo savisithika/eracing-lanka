@@ -227,7 +227,7 @@
                 tbody.innerHTML = data.map(b => `
                     <tr>
                         <td><strong>${b.booking_date}</strong><br><span style="color:#39ff14;">${b.time_slot}</span></td>
-                        <td><strong>SIM ${b.rig_number}</strong></td>
+                        <td><strong>SIM ${(b.rig_numbers || [b.rig_number]).join(', ')}</strong></td>
                         <td>${b.duration_mins || 60} MIN<br><small style="color:#9aa39f;">LKR ${b.price_lkr || 2000}</small></td>
                         <td>${b.customer_name}<br><a href="tel:${b.customer_phone}" style="color:#00ffff;">${b.customer_phone}</a></td>
                         <td>${b.payment_method}<br>${b.payment_slip_url ? `<a href="${b.payment_slip_url}" target="_blank" class="slip-link">View Slip ↗</a>` : '<small style="color:#9aa39f;">No slip</small>'}</td>
