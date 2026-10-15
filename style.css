@@ -683,4 +683,15 @@ h1 span {
     .mode-tabs {
         flex-direction: column;
     }
+         
+   
+}
+
+/* Make mobile date picker easy to tap anywhere */
+.mobile-date-input {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    min-height: 46px;
 }
