@@ -45,7 +45,7 @@
 
         <div class="checker-divider" aria-hidden="true"></div>
 
-        <!-- PRICING (Click any card to pre-select duration) -->
+        <!-- PRICING -->
         <section class="pricing">
             <p class="section-label">Session Times (Click to Select)</p>
 
@@ -88,7 +88,7 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="bookingDate">1. Select Date</label>
-                            <input type="date" id="bookingDate" required>
+                            <input type="date" id="bookingDate" class="mobile-date-input" required>
                         </div>
                         <div class="form-group">
                             <label for="sessionDuration">2. Session Duration</label>
@@ -108,9 +108,9 @@
                         <input type="hidden" id="selectedTimeSlot" required>
                     </div>
 
-                    <!-- Dynamic Simulator Rigs (1 to 10) -->
+                    <!-- Dynamic Simulator Rigs (Multi-select for groups) -->
                     <div class="form-group">
-                        <label>4. Choose Simulator Rig (1–10)</label>
+                        <label>4. Choose Simulator Rig(s) <span id="rigSelectionHint" class="label-hint">(Select one or more)</span></label>
                         <div id="rigsGrid" class="rigs-grid"></div>
                         <input type="hidden" id="selectedRig" required>
                     </div>
@@ -146,7 +146,7 @@
                 </form>
             </div>
 
-            <!-- PANEL 2: EVENT & TOURNAMENT REGISTRATION -->
+            <!-- PANEL 2: EVENT REGISTRATION -->
             <div id="eventRegPanel" class="booking-panel">
                 <form id="eventRegForm" class="eracing-form">
                     <div class="form-group">
@@ -223,7 +223,7 @@
 
     </main>
 
-    <!-- SLIDESHOW + SUPABASE BOOKING ENGINE -->
+    <!-- SCRIPT -->
     <script>
         // 1. SLIDESHOW SCRIPT
         (function () {
@@ -271,21 +271,21 @@
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlzd2FtZWZ5b2R4dWNveXJ3ZW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5ODk4OTEsImV4cCI6MjEwNzU2NTg5MX0.KxzIyB7CurVDF_50LogzQds4sePcast_vB5AjGpyDF4';
             const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-            // Default schedule fallback (matches database settings)
             let venueConfig = {
                 total_rigs: 10,
                 schedule: {
-                    "0": { open: "10:00", close: "24:00", closed: false }, // Sun
-                    "1": { open: "15:00", close: "23:00", closed: true },  // Mon (Closed)
-                    "2": { open: "15:00", close: "23:00", closed: false }, // Tue
-                    "3": { open: "15:00", close: "23:00", closed: false }, // Wed
-                    "4": { open: "15:00", close: "23:00", closed: false }, // Thu
-                    "5": { open: "15:00", close: "23:00", closed: false }, // Fri
-                    "6": { open: "10:00", close: "24:00", closed: false }  // Sat
+                    "0": { open: "10:00", close: "24:00", closed: false },
+                    "1": { open: "15:00", close: "23:00", closed: true },
+                    "2": { open: "15:00", close: "23:00", closed: false },
+                    "3": { open: "15:00", close: "23:00", closed: false },
+                    "4": { open: "15:00", close: "23:00", closed: false },
+                    "5": { open: "15:00", close: "23:00", closed: false },
+                    "6": { open: "10:00", close: "24:00", closed: false }
                 }
             };
 
             let dayBookings = [];
+            let selectedRigsList = [];
             const dateInput = document.getElementById('bookingDate');
             const durationSelect = document.getElementById('sessionDuration');
             const slotsGrid = document.getElementById('timeSlotsGrid');
@@ -294,20 +294,17 @@
             const selectedRigInput = document.getElementById('selectedRig');
             const hoursHint = document.getElementById('hoursHint');
 
-            // Helper: Convert "HH:MM" to minutes from midnight
             function toMins(timeStr) {
                 const parts = timeStr.split(':').map(Number);
                 return parts[0] * 60 + parts[1];
             }
 
-            // Helper: Convert minutes from midnight to "HH:MM"
             function toTimeStr(mins) {
                 const h = Math.floor(mins / 60);
                 const m = mins % 60;
                 return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
             }
 
-            // Helper: Format "15:00" to "3:00 PM"
             function format12Hr(timeStr) {
                 const [h, m] = timeStr.split(':').map(Number);
                 const suffix = h >= 12 && h < 24 ? 'PM' : 'AM';
@@ -315,22 +312,19 @@
                 return hr12 + ':' + String(m).padStart(2, '0') + ' ' + suffix;
             }
 
-            // Check if a specific rig is free for [startMins, startMins + durationMins)
             function isRigAvailable(rigNum, startMins, durationMins) {
                 const endMins = startMins + durationMins;
                 for (const b of dayBookings) {
-                    if (Number(b.rig_number) !== rigNum) continue;
+                    const rigsArr = b.rig_numbers || [b.rig_number];
+                    if (!rigsArr.includes(rigNum)) continue;
                     const bStart = toMins(b.time_slot);
                     const bDur = Number(b.duration_mins) || (Number(b.duration_hours || 1) * 60);
                     const bEnd = bStart + bDur;
-                    if (startMins < bEnd && endMins > bStart) {
-                        return false; // Overlaps existing booking
-                    }
+                    if (startMins < bEnd && endMins > bStart) return false;
                 }
                 return true;
             }
 
-            // Load editable settings from Supabase
             async function initBookingSystem() {
                 const { data } = await sb.from('venue_settings').select('*').eq('id', 1).maybeSingle();
                 if (data) {
@@ -342,7 +336,6 @@
                     }
                 }
 
-                // Set default date to today (or tomorrow if Monday)
                 const today = new Date();
                 if (today.getDay() === 1) today.setDate(today.getDate() + 1);
                 const yyyy = today.getFullYear();
@@ -358,7 +351,7 @@
                 slotsGrid.innerHTML = '<span class="loading-text">Checking live telemetry...</span>';
                 const { data } = await sb
                     .from('rig_bookings')
-                    .select('rig_number, time_slot, duration_mins, duration_hours, status')
+                    .select('rig_number, rig_numbers, time_slot, duration_mins, duration_hours, status')
                     .eq('booking_date', dateStr)
                     .neq('status', 'cancelled');
 
@@ -368,8 +361,9 @@
 
             function renderTimeSlots() {
                 slotsGrid.innerHTML = '';
-                rigsGrid.innerHTML = '<span class="loading-text">Select a start time above to see available rigs.</span>';
+                rigsGrid.innerHTML = '<span class="loading-text">Select a start time above to choose your rig(s).</span>';
                 selectedTimeInput.value = '';
+                selectedRigsList = [];
                 selectedRigInput.value = '';
 
                 if (!dateInput.value) return;
@@ -389,14 +383,24 @@
 
                 hoursHint.textContent = `(${format12Hr(dayRule.open)} – ${dayRule.close === '24:00' ? 'Midnight' : format12Hr(dayRule.close)})`;
 
+                // Calculate current time in minutes from midnight if selected date is today
+                const now = new Date();
+                const isToday = dateInput.value === now.toISOString().split('T')[0];
+                const currentMins = now.getHours() * 60 + now.getMinutes();
+
+                let availableSlotsCount = 0;
+
                 for (let t = openMins; t + durationMins <= closeMins; t += 30) {
+                    // Prevent booking past times if date is today
+                    if (isToday && t <= currentMins) continue;
+
                     const slotStr = toTimeStr(t);
-                    // Count how many rigs are free for this slot + duration
                     let freeCount = 0;
                     for (let r = 1; r <= venueConfig.total_rigs; r++) {
                         if (isRigAvailable(r, t, durationMins)) freeCount++;
                     }
 
+                    availableSlotsCount++;
                     const btn = document.createElement('button');
                     btn.type = 'button';
                     btn.className = 'slot-btn' + (freeCount === 0 ? ' full' : '');
@@ -410,10 +414,15 @@
                     });
                     slotsGrid.appendChild(btn);
                 }
+
+                if (availableSlotsCount === 0) {
+                    slotsGrid.innerHTML = '<div class="closed-banner">No remaining time slots available for today. Please pick another date.</div>';
+                }
             }
 
             function renderRigs(startMins, durationMins) {
                 rigsGrid.innerHTML = '';
+                selectedRigsList = [];
                 selectedRigInput.value = '';
 
                 for (let r = 1; r <= venueConfig.total_rigs; r++) {
@@ -425,16 +434,20 @@
                     btn.innerHTML = `<strong>SIM ${r}</strong><small>${free ? 'OPEN' : 'BOOKED'}</small>`;
                     if (free) {
                         btn.addEventListener('click', function () {
-                            document.querySelectorAll('.rig-btn').forEach(b => b.classList.remove('selected'));
-                            btn.classList.add('selected');
-                            selectedRigInput.value = r;
+                            btn.classList.toggle('selected');
+                            const rigNum = r;
+                            if (selectedRigsList.includes(rigNum)) {
+                                selectedRigsList = selectedRigsList.filter(item => item !== rigNum);
+                            } else {
+                                selectedRigsList.push(rigNum);
+                            }
+                            selectedRigInput.value = selectedRigsList.length > 0 ? selectedRigsList.join(',') : '';
                         });
                     }
                     rigsGrid.appendChild(btn);
                 }
             }
 
-            // Event listeners for date, duration, and price cards
             dateInput.addEventListener('change', () => fetchBookingsForDate(dateInput.value));
             durationSelect.addEventListener('change', renderTimeSlots);
 
@@ -448,7 +461,6 @@
                 });
             });
 
-            // Mode Tabs (Simulator Booking vs Event Registration)
             document.querySelectorAll('.mode-tab').forEach(tab => {
                 tab.addEventListener('click', function () {
                     document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
@@ -458,12 +470,10 @@
                 });
             });
 
-            // Toggle Slip Upload on Rig Booking
             document.getElementById('paymentMethod').addEventListener('change', function (e) {
                 document.getElementById('rigSlipGroup').style.display = e.target.value === 'bank_transfer' ? 'flex' : 'none';
             });
 
-            // Helper: Upload payment slip to Supabase Storage
             async function uploadSlipFile(fileInput) {
                 if (!fileInput.files || !fileInput.files[0]) return null;
                 const file = fileInput.files[0];
@@ -475,36 +485,37 @@
                 return data.publicUrl;
             }
 
-            // Submit Rig Booking
             document.getElementById('rigBookingForm').addEventListener('submit', async function (e) {
                 e.preventDefault();
                 const statusEl = document.getElementById('rigStatusMsg');
                 const submitBtn = document.getElementById('rigSubmitBtn');
 
-                if (!selectedTimeInput.value || !selectedRigInput.value) {
+                if (!selectedTimeInput.value || selectedRigsList.length === 0) {
                     statusEl.className = 'status-msg error';
-                    statusEl.textContent = 'Please select both a Start Time and a Simulator Rig (1–10).';
+                    statusEl.textContent = 'Please select a Start Time and at least one Simulator Rig.';
                     return;
                 }
 
                 submitBtn.disabled = true;
-                submitBtn.textContent = 'Locking Grid Slot...';
+                submitBtn.textContent = 'Locking Grid Slots...';
                 statusEl.textContent = '';
 
                 try {
                     const slipUrl = await uploadSlipFile(document.getElementById('rigSlipFile'));
                     const durMins = Number(durationSelect.value);
-                    const priceMap = { 30: 1200, 60: 2000, 120: 3500, 240: 6000 };
+                    const pricePerRig = { 30: 1200, 60: 2000, 120: 3500, 240: 6000 }[durMins] || 2000;
+                    const totalPrice = pricePerRig * selectedRigsList.length;
 
                     const { error } = await sb.from('rig_bookings').insert([{
                         customer_name: document.getElementById('custName').value.trim(),
                         customer_phone: document.getElementById('custPhone').value.trim(),
-                        rig_number: Number(selectedRigInput.value),
+                        rig_number: selectedRigsList[0],
+                        rig_numbers: selectedRigsList,
                         booking_date: dateInput.value,
                         time_slot: selectedTimeInput.value,
                         duration_mins: durMins,
                         duration_hours: Math.ceil(durMins / 60),
-                        price_lkr: priceMap[durMins] || 2000,
+                        price_lkr: totalPrice,
                         payment_method: document.getElementById('paymentMethod').value,
                         payment_slip_url: slipUrl,
                         status: 'confirmed'
@@ -513,20 +524,19 @@
                     if (error) throw error;
 
                     statusEl.className = 'status-msg success';
-                    statusEl.textContent = `Booked! SIM ${selectedRigInput.value} is locked for ${format12Hr(selectedTimeInput.value)} (${durMins} MIN) on ${dateInput.value}.`;
+                    statusEl.textContent = `Booked! Sims [${selectedRigsList.join(', ')}] locked for ${format12Hr(selectedTimeInput.value)} (${durMins} MIN). Total: LKR ${totalPrice.toLocaleString()}`;
                     document.getElementById('custName').value = '';
                     document.getElementById('custPhone').value = '';
                     await fetchBookingsForDate(dateInput.value);
                 } catch (err) {
                     statusEl.className = 'status-msg error';
-                    statusEl.textContent = 'Error saving booking: ' + (err.message || 'Slot may have just been taken.');
+                    statusEl.textContent = 'Error saving booking: ' + (err.message || 'Slots may have just been taken.');
                 } finally {
                     submitBtn.disabled = false;
                     submitBtn.textContent = 'Confirm Rig Reservation';
                 }
             });
 
-            // Submit Event Registration
             document.getElementById('eventRegForm').addEventListener('submit', async function (e) {
                 e.preventDefault();
                 const statusEl = document.getElementById('eventStatusMsg');
