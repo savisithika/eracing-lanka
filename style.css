@@ -45,38 +45,28 @@ body {
 }
 
 .logo {
+    display: block;
     width: 90%;
     max-width: 600px;
     height: auto;
-    margin-bottom: 14px;
+    margin: 0;
     filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.3));
 }
 
-/* 3. HEADLINE */
-h1 {
-    font-family: 'Russo One', sans-serif;
-    font-size: 3.5rem;
-    margin: 0;
-    margin-bottom: 15px;
-    text-transform: uppercase;
-    line-height: 1.1;
-    display: block;
-    text-align: center;
+/* Visually hidden but still read by Google & screen readers (takes no space) */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
-h1 span {
-    display: inline-block;
-    transform: skewX(-10deg);
-
-    background: linear-gradient(to bottom, #ffffff 0%, #aebcbf 50%, #6e7774 51%, #0a0e0a 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-
-    -webkit-text-stroke: 2px #39ff14;
-    filter: drop-shadow(0 0 5px #39ff14);
-}
-
+/* 3. SUBTITLE */
 .subtitle {
     font-family: 'Russo One', sans-serif;
     font-size: 1.2rem;
@@ -84,7 +74,7 @@ h1 span {
     letter-spacing: 1.5px;
     text-transform: uppercase;
     transform: skewX(-10deg);
-    margin: 10px 0 0;
+    margin: 4px 0 0;
     max-width: 560px;
     text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
 }
@@ -92,7 +82,7 @@ h1 span {
 /* 4. GALLERY SLIDESHOW */
 .gallery {
     width: 100%;
-    margin: 20px 0 0;
+    margin: 28px 0 0;
     display: flex;
     justify-content: center;
 }
@@ -283,14 +273,7 @@ h1 span {
     text-shadow: none;
 }
 
-/* 8. CTA / BOOKING */
-.cta {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
+/* 8. CALL BUTTON */
 .call-button {
     display: flex;
     flex-direction: column;
@@ -379,20 +362,6 @@ h1 span {
 @media (max-width: 600px) {
     .page {
         padding: 40px 16px 60px;
-    }
-
-    h1 {
-        font-size: 2.2rem;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    h1 span {
-        display: block;
-        -webkit-text-stroke: 1px #39ff14;
-        margin-bottom: 5px;
-        margin-left: 0;
     }
 
     .subtitle {
@@ -535,7 +504,9 @@ h1 span {
     padding: 12px;
     color: #ffffff;
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.95rem;
+    font-size: 16px;            /* 16px stops iPhones zooming in when you tap a field */
+    color-scheme: dark;         /* dark date picker & file button */
+    width: 100%;
 }
 
 .form-group input:focus,
@@ -610,17 +581,6 @@ h1 span {
     color: #ff3333;
 }
 
-.closed-banner,
-.loading-text {
-    grid-column: 1 / -1;
-    padding: 14px;
-    text-align: center;
-    font-family: 'Share Tech Mono', monospace;
-    color: #ffd700;
-    border: 1px dashed rgba(255, 215, 0, 0.4);
-    border-radius: 5px;
-}
-
 .submit-btn {
     margin-top: 8px;
     padding: 16px;
@@ -685,4 +645,248 @@ h1 span {
     .mode-tabs {
         flex-direction: column;
     }
+}
+
+/* =========================================================
+   12. ROUND-2 ADDITIONS
+   ========================================================= */
+[hidden] { display: none !important; }
+
+/* keyboard focus rings */
+.selectable-card:focus-visible,
+.mode-tab:focus-visible,
+.slot-btn:focus-visible,
+.rig-btn:focus-visible,
+.submit-btn:focus-visible,
+.call-button:focus-visible,
+.slide-arrow:focus-visible,
+.slide-dot:focus-visible,
+.retry-btn:focus-visible,
+.whatsapp-btn:focus-visible,
+.directions-link:focus-visible {
+    outline: 2px solid #00ffff;
+    outline-offset: 3px;
+}
+
+/* spam trap: off-screen, never visible to people */
+.hp-field {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+/* notices inside the time-slot grid (loading / closed / error) */
+.slot-notice {
+    grid-column: 1 / -1;
+    padding: 14px;
+    text-align: center;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    border-radius: 5px;
+    color: #ffd700;
+    border: 1px dashed rgba(255, 215, 0, 0.4);
+}
+
+.slot-notice.loading {
+    color: #9aa39f;
+    border-color: rgba(154, 163, 159, 0.4);
+}
+
+.slot-notice.error {
+    color: #ff4d4d;
+    border: 1px solid #ff4d4d;
+    background: rgba(255, 77, 77, 0.08);
+}
+
+.retry-btn {
+    margin-left: 4px;
+    padding: 4px 12px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    color: #050505;
+    background: #ff4d4d;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* bank transfer details */
+.bank-box {
+    border: 1px solid rgba(0, 255, 255, 0.4);
+    background: rgba(0, 255, 255, 0.05);
+    border-radius: 6px;
+    padding: 14px 16px;
+}
+
+.bank-title {
+    margin: 0 0 8px;
+    font-size: 0.85rem;
+    color: #00ffff;
+    font-family: 'Share Tech Mono', monospace;
+}
+
+.bank-details {
+    white-space: pre-line;          /* keeps the line breaks you type in the database */
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #ffffff;
+    user-select: all;               /* one tap/click selects it all for copying */
+}
+
+/* booking confirmation card */
+.status-msg:empty { display: none; }
+
+.confirm-card {
+    text-align: center;
+    border: 1px solid #39ff14;
+    background: rgba(57, 255, 20, 0.06);
+    border-radius: 8px;
+    padding: 20px 16px;
+    box-shadow: 0 0 20px rgba(57, 255, 20, 0.2);
+}
+
+.confirm-card.pending {
+    border-color: #ffd700;
+    background: rgba(255, 215, 0, 0.06);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.15);
+}
+
+.confirm-card h3 {
+    margin: 0 0 14px;
+    font-family: 'Russo One', sans-serif;
+    font-size: 1.3rem;
+    color: #39ff14;
+    text-transform: uppercase;
+}
+
+.confirm-card.pending h3 { color: #ffd700; }
+
+.confirm-ref {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px 22px;
+    margin-bottom: 14px;
+    background: #050505;
+    border: 1px dashed rgba(255, 255, 255, 0.4);
+    border-radius: 6px;
+}
+
+.confirm-ref-label {
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #9aa39f;
+}
+
+.confirm-ref-code {
+    font-family: 'Russo One', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 3px;
+    color: #ffffff;
+    user-select: all;
+}
+
+.confirm-lines {
+    list-style: none;
+    margin: 0 0 12px;
+    padding: 0;
+    color: #ffffff;
+    line-height: 1.7;
+}
+
+.confirm-note {
+    margin: 0 0 14px;
+    color: #c7d0cc;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.confirm-note.small {
+    margin: 12px 0 0;
+    font-size: 0.78rem;
+    color: #9aa39f;
+}
+
+.whatsapp-btn {
+    display: inline-block;
+    padding: 12px 20px;
+    font-family: 'Russo One', sans-serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: #050505;
+    background: #25d366;
+    border-radius: 6px;
+    transition: transform 0.15s ease;
+}
+
+.whatsapp-btn:hover { transform: translateY(-2px); }
+
+/* find us: address + opening hours */
+.address-line {
+    font-style: normal;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.95rem;
+    color: #ffffff;
+    margin: -8px 0 16px;
+}
+
+.hours-box {
+    margin-top: 28px;
+    width: 100%;
+    max-width: 320px;
+}
+
+.hours-title {
+    margin: 0 0 10px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #39ff14;
+}
+
+.hours-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.9rem;
+}
+
+.hours-table th,
+.hours-table td {
+    padding: 7px 4px;
+    border-bottom: 1px solid rgba(57, 255, 20, 0.15);
+}
+
+.hours-table th {
+    text-align: left;
+    font-weight: normal;
+    color: #9aa39f;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.hours-table td { text-align: right; color: #ffffff; }
+.hours-table td.closed { color: #ff4d4d; }
+
+.hours-table tr.today th,
+.hours-table tr.today td {
+    color: #39ff14;
+    text-shadow: 0 0 8px rgba(57, 255, 20, 0.5);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .slide { transition: none; }
+    .selectable-card,
+    .call-button,
+    .submit-btn,
+    .whatsapp-btn { transition: none; }
 }
