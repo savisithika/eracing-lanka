@@ -5,21 +5,457 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ERACING LANKA</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=4">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <!-- Supabase Client CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        /* TOP 4-BUTTON NAVIGATION BAR */
+        .top-nav {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            width: 100%;
+            max-width: 680px;
+            margin: 18px 0 8px;
+        }
+
+        .top-nav-btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 12px 10px;
+            background: #0c1210;
+            border: 1px solid rgba(57, 255, 20, 0.45);
+            border-radius: 6px;
+            color: #ffffff;
+            font-family: 'Russo One', sans-serif;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: inset 0 0 14px rgba(57, 255, 20, 0.06);
+            transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .top-nav-btn:hover:not(.locked) {
+            transform: translateY(-2px);
+            border-color: #39ff14;
+            color: #39ff14;
+            box-shadow: 0 0 14px rgba(57, 255, 20, 0.35);
+        }
+
+        .top-nav-btn.locked {
+            border-color: rgba(255, 255, 255, 0.15);
+            color: #6e7774;
+            cursor: not-allowed;
+            background: rgba(12, 18, 16, 0.55);
+        }
+
+        .lock-tag {
+            position: absolute;
+            top: -9px;
+            right: 6px;
+            background: #ffd700;
+            color: #050505;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.6rem;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            padding: 2px 5px;
+            border-radius: 3px;
+            text-transform: uppercase;
+        }
+
+        .nav-toast {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            color: #ffd700;
+            min-height: 20px;
+            margin-top: 4px;
+            letter-spacing: 1px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .nav-toast.show {
+            opacity: 1;
+        }
+
+        /* HIDDEN BY DEFAULT FOR PUBLIC VISITORS UNTIL UNLOCKED */
+        .dev-hidden {
+            display: none !important;
+        }
+
+        /* BOOKING & EVENT CONSOLE STYLES */
+        .selectable-card {
+            cursor: pointer;
+            transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+        .selectable-card:hover,
+        .selectable-card.active-card {
+            transform: translateY(-3px);
+            border-color: #39ff14 !important;
+            box-shadow: 0 0 18px rgba(57, 255, 20, 0.35) !important;
+        }
+
+        .booking-section {
+            width: 100%;
+            max-width: 720px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 auto;
+        }
+
+        .dev-banner {
+            width: 100%;
+            background: rgba(255, 215, 0, 0.12);
+            border: 1px dashed #ffd700;
+            color: #ffd700;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+
+        .mode-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .mode-tab {
+            font-family: 'Russo One', sans-serif;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            padding: 12px 24px;
+            background: #0c1210;
+            color: #9aa39f;
+            border: 1px solid rgba(57, 255, 20, 0.3);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .mode-tab.active {
+            color: #050505;
+            background: #39ff14;
+            border-color: #39ff14;
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.5);
+        }
+
+        .booking-panel {
+            display: none;
+            width: 100%;
+            background: #0c1210;
+            border: 1px solid rgba(57, 255, 20, 0.35);
+            border-radius: 8px;
+            padding: 28px 24px;
+            box-shadow: inset 0 0 25px rgba(57, 255, 20, 0.05);
+            text-align: left;
+        }
+
+        .booking-panel.active {
+            display: block;
+        }
+
+        .eracing-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.85rem;
+            color: #39ff14;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .label-hint {
+            color: #00ffff;
+            font-size: 0.8rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            background: #050505;
+            border: 1px solid rgba(57, 255, 20, 0.4);
+            border-radius: 5px;
+            padding: 12px;
+            color: #ffffff;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.95rem;
+            width: 100%;
+            min-height: 46px;
+            color-scheme: dark;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #00ffff;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        .mobile-date-input {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .slots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(115px, 1fr));
+            gap: 10px;
+        }
+
+        .rigs-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .slot-btn,
+        .rig-btn {
+            background: #050505;
+            border: 1px solid rgba(57, 255, 20, 0.35);
+            border-radius: 5px;
+            padding: 10px 6px;
+            color: #ffffff;
+            font-family: 'Share Tech Mono', monospace;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.15s ease;
+        }
+
+        .slot-btn small,
+        .rig-btn small {
+            font-size: 0.7rem;
+            color: #39ff14;
+            display: block;
+        }
+
+        .slot-btn:hover:not(:disabled),
+        .rig-btn:hover:not(:disabled) {
+            border-color: #00ffff;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        .slot-btn.selected,
+        .rig-btn.selected {
+            background: #39ff14;
+            color: #050505;
+            border-color: #39ff14;
+            box-shadow: 0 0 14px rgba(57, 255, 20, 0.6);
+            font-weight: bold;
+        }
+
+        .slot-btn.selected small,
+        .rig-btn.selected small {
+            color: #050505;
+        }
+
+        .slot-btn.full,
+        .rig-btn.booked {
+            opacity: 0.35;
+            border-color: #ff3333;
+            cursor: not-allowed;
+        }
+
+        .rig-btn.booked small {
+            color: #ff3333;
+        }
+
+        .closed-banner,
+        .loading-text {
+            grid-column: 1 / -1;
+            padding: 14px;
+            text-align: center;
+            font-family: 'Share Tech Mono', monospace;
+            color: #ffd700;
+            border: 1px dashed rgba(255, 215, 0, 0.4);
+            border-radius: 5px;
+        }
+
+        .submit-btn {
+            margin-top: 8px;
+            padding: 16px;
+            font-family: 'Russo One', sans-serif;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: #39ff14;
+            color: #050505;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.4);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            width: 100%;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 0 28px rgba(57, 255, 20, 0.7);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        .status-msg {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .status-msg:empty { display: none; }
+
+        .status-msg.success {
+            color: #39ff14;
+            border: 1px solid #39ff14;
+            background: rgba(57, 255, 20, 0.08);
+        }
+
+        .status-msg.error {
+            color: #ff4d4d;
+            border: 1px solid #ff4d4d;
+            background: rgba(255, 77, 77, 0.08);
+        }
+
+        .cta {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .call-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            text-decoration: none;
+            padding: 18px 44px;
+            border-radius: 8px;
+            background: linear-gradient(#111 0%, #0a0a0a 100%);
+            border: 2px solid #39ff14;
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.35);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .call-label {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #9aa39f;
+        }
+
+        .call-number {
+            font-family: 'Russo One', sans-serif;
+            font-size: 1.8rem;
+            color: #ffffff;
+            text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+        }
+
+        .cta-note {
+            margin-top: 16px;
+            max-width: 420px;
+            font-size: 0.85rem;
+            color: #9aa39f;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            .top-nav {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            .booking-panel {
+                padding: 20px 16px;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .rigs-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .mode-tabs {
+                flex-direction: column;
+            }
+            .call-button {
+                padding: 16px 30px;
+                width: 100%;
+                max-width: 320px;
+            }
+            .call-number {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
 
     <main class="page">
 
-        <!-- HERO -->
+        <!-- HERO + 4-BUTTON HORIZONTAL BAR -->
         <section class="hero">
-            <img src="images/logo.png" alt="ERACING LANKA Logo" class="logo">
+            <img src="images/logo.png" alt="ERACING LANKA Logo" class="logo" id="siteLogo" style="cursor:pointer;" title="ERACING LANKA">
+
+            <!-- 4-BUTTON HORIZONTAL NAVIGATION BAR -->
+            <nav class="top-nav" aria-label="Main Navigation">
+                <button type="button" class="top-nav-btn locked" id="navBookingsBtn">
+                    <span>Bookings</span>
+                    <span class="lock-tag" id="lockTagBookings">🔒 Soon</span>
+                </button>
+                <button type="button" class="top-nav-btn locked" id="navEventsBtn">
+                    <span>Events</span>
+                    <span class="lock-tag" id="lockTagEvents">🔒 Soon</span>
+                </button>
+                <a href="#locationSection" class="top-nav-btn">
+                    <span>Directions</span>
+                </a>
+                <a href="#contactSection" class="top-nav-btn">
+                    <span>Contact Us</span>
+                </a>
+            </nav>
+            <div id="navToast" class="nav-toast"></div>
 
             <h1>
                 <span></span><span>&nbsp;</span>
@@ -47,14 +483,14 @@
 
         <!-- PRICING -->
         <section class="pricing">
-            <p class="section-label">Session Times (Click to Select)</p>
+            <p class="section-label">Session Times</p>
 
             <div class="price-grid">
                 <div class="price-card selectable-card" data-duration="30" data-price="1200">
                     <span class="duration">30<small>MIN</small></span>
                     <span class="price"><small>LKR</small>1,200</span>
                 </div>
-                <div class="price-card selectable-card active-card" data-duration="60" data-price="2000">
+                <div class="price-card selectable-card" data-duration="60" data-price="2000">
                     <span class="duration">60<small>MIN</small></span>
                     <span class="price"><small>LKR</small>2,000</span>
                 </div>
@@ -70,16 +506,17 @@
             </div>
         </section>
 
-        <div class="checker-divider" aria-hidden="true"></div>
+        <!-- DEV-ONLY BOOKING & EVENT CONSOLE (HIDDEN ON LIVE SITE UNTIL UNLOCKED) -->
+        <div class="checker-divider dev-hidden" id="bookingDivider" aria-hidden="true"></div>
 
-        <!-- ONLINE BOOKING & EVENT REGISTRATION CONSOLE -->
-        <section class="booking-section" id="bookingSection">
+        <section class="booking-section dev-hidden" id="bookingSection">
+            <div class="dev-banner">🔧 DEVELOPER PREVIEW MODE — Hidden from public visitors</div>
             <p class="section-label">Reserve Your Grid Slot</p>
 
             <!-- Mode Switcher Tabs -->
             <div class="mode-tabs">
-                <button type="button" class="mode-tab active" data-target="rigBookingPanel">Simulator Booking</button>
-                <button type="button" class="mode-tab" data-target="eventRegPanel">Event Registration</button>
+                <button type="button" class="mode-tab active" id="tabBtnBookings" data-target="rigBookingPanel">Simulator Booking</button>
+                <button type="button" class="mode-tab" id="tabBtnEvents" data-target="eventRegPanel">Event Registration</button>
             </div>
 
             <!-- PANEL 1: SIMULATOR RIG BOOKING -->
@@ -88,7 +525,7 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="bookingDate">1. Select Date</label>
-                            <input type="date" id="bookingDate" class="mobile-date-input" required>
+                            <input type="date" id="bookingDate" class="mobile-date-input" onclick="try{this.showPicker()}catch(e){}" required>
                         </div>
                         <div class="form-group">
                             <label for="sessionDuration">2. Session Duration</label>
@@ -189,21 +626,24 @@
                     <div id="eventStatusMsg" class="status-msg"></div>
                 </form>
             </div>
-
-            <!-- Keep Direct Call Option -->
-            <div class="direct-call-wrap">
-                <p class="cta-note">Prefer to book over the phone or booking all 10 rigs for a group?</p>
-                <a href="tel:0770119469" class="call-button">
-                    <span class="call-label">Call to Book</span>
-                    <span class="call-number">077 011 9469</span>
-                </a>
-            </div>
         </section>
 
         <div class="checker-divider" aria-hidden="true"></div>
 
-        <!-- LOCATION -->
-        <section class="location">
+        <!-- CONTACT US / CALL TO BOOK -->
+        <section class="cta" id="contactSection">
+            <p class="section-label">Reserve Your Rig</p>
+            <a href="tel:0770119469" class="call-button">
+                <span class="call-label">Call to Book</span>
+                <span class="call-number">077 011 9469</span>
+            </a>
+            <p class="cta-note">Walk-ins welcome, subject to availability. Call ahead to guarantee your grid slot.</p>
+        </section>
+
+        <div class="checker-divider" aria-hidden="true"></div>
+
+        <!-- LOCATION / DIRECTIONS -->
+        <section class="location" id="locationSection">
             <p class="section-label">Find Us</p>
 
             <div class="map-frame">
@@ -265,7 +705,69 @@
             resetTimer();
         })();
 
-        // 2. SUPABASE BOOKING & EVENT ENGINE
+        // 2. TOP BAR LOCK & SECRET DEVELOPER UNLOCK
+        (function () {
+            let devUnlocked = new URLSearchParams(window.location.search).get('dev') === '1';
+            let logoClicks = 0;
+            let clickResetTimer;
+
+            const navBookingsBtn = document.getElementById('navBookingsBtn');
+            const navEventsBtn = document.getElementById('navEventsBtn');
+            const bookingSection = document.getElementById('bookingSection');
+            const bookingDivider = document.getElementById('bookingDivider');
+            const navToast = document.getElementById('navToast');
+
+            function showNavNotice(msg) {
+                navToast.textContent = msg;
+                navToast.classList.add('show');
+                setTimeout(() => navToast.classList.remove('show'), 3200);
+            }
+
+            function activateDevMode() {
+                devUnlocked = true;
+                navBookingsBtn.classList.remove('locked');
+                navEventsBtn.classList.remove('locked');
+                document.getElementById('lockTagBookings').textContent = 'DEV';
+                document.getElementById('lockTagEvents').textContent = 'DEV';
+                bookingSection.classList.remove('dev-hidden');
+                bookingDivider.classList.remove('dev-hidden');
+                showNavNotice('🔧 Developer Preview Unlocked!');
+            }
+
+            if (devUnlocked) {
+                activateDevMode();
+            }
+
+            // Secret unlock: tap the ERACING LANKA logo 5 times
+            document.getElementById('siteLogo').addEventListener('click', function () {
+                logoClicks++;
+                clearTimeout(clickResetTimer);
+                clickResetTimer = setTimeout(() => { logoClicks = 0; }, 2000);
+                if (logoClicks >= 5 && !devUnlocked) {
+                    activateDevMode();
+                }
+            });
+
+            navBookingsBtn.addEventListener('click', function () {
+                if (!devUnlocked) {
+                    showNavNotice('Online Bookings launching soon! Call 077 011 9469 to reserve.');
+                    return;
+                }
+                document.getElementById('tabBtnBookings').click();
+                bookingSection.scrollIntoView({ behavior: 'smooth' });
+            });
+
+            navEventsBtn.addEventListener('click', function () {
+                if (!devUnlocked) {
+                    showNavNotice('Online Event Registration launching soon!');
+                    return;
+                }
+                document.getElementById('tabBtnEvents').click();
+                bookingSection.scrollIntoView({ behavior: 'smooth' });
+            });
+        })();
+
+        // 3. SUPABASE BOOKING & EVENT ENGINE
         (function () {
             const SUPABASE_URL = 'https://iswamefyodxucoyrwemz.supabase.co';
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlzd2FtZWZ5b2R4dWNveXJ3ZW16Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5ODk4OTEsImV4cCI6MjEwNzU2NTg5MX0.KxzIyB7CurVDF_50LogzQds4sePcast_vB5AjGpyDF4';
@@ -312,6 +814,14 @@
                 return hr12 + ':' + String(m).padStart(2, '0') + ' ' + suffix;
             }
 
+            function getLocalTodayStr() {
+                const now = new Date();
+                const yyyy = now.getFullYear();
+                const mm = String(now.getMonth() + 1).padStart(2, '0');
+                const dd = String(now.getDate()).padStart(2, '0');
+                return `${yyyy}-${mm}-${dd}`;
+            }
+
             function isRigAvailable(rigNum, startMins, durationMins) {
                 const endMins = startMins + durationMins;
                 for (const b of dayBookings) {
@@ -337,11 +847,12 @@
                 }
 
                 const today = new Date();
+                const todayMinStr = getLocalTodayStr();
                 if (today.getDay() === 1) today.setDate(today.getDate() + 1);
                 const yyyy = today.getFullYear();
                 const mm = String(today.getMonth() + 1).padStart(2, '0');
                 const dd = String(today.getDate()).padStart(2, '0');
-                dateInput.min = `${yyyy}-${mm}-${dd}`;
+                dateInput.min = todayMinStr;
                 dateInput.value = `${yyyy}-${mm}-${dd}`;
 
                 await fetchBookingsForDate(dateInput.value);
@@ -383,15 +894,13 @@
 
                 hoursHint.textContent = `(${format12Hr(dayRule.open)} – ${dayRule.close === '24:00' ? 'Midnight' : format12Hr(dayRule.close)})`;
 
-                // Calculate current time in minutes from midnight if selected date is today
                 const now = new Date();
-                const isToday = dateInput.value === now.toISOString().split('T')[0];
+                const isToday = dateInput.value === getLocalTodayStr();
                 const currentMins = now.getHours() * 60 + now.getMinutes();
 
                 let availableSlotsCount = 0;
 
                 for (let t = openMins; t + durationMins <= closeMins; t += 30) {
-                    // Prevent booking past times if date is today
                     if (isToday && t <= currentMins) continue;
 
                     const slotStr = toTimeStr(t);
@@ -453,6 +962,7 @@
 
             document.querySelectorAll('.selectable-card').forEach(card => {
                 card.addEventListener('click', function () {
+                    if (document.getElementById('bookingSection').classList.contains('dev-hidden')) return;
                     document.querySelectorAll('.selectable-card').forEach(c => c.classList.remove('active-card'));
                     card.classList.add('active-card');
                     durationSelect.value = card.getAttribute('data-duration');
